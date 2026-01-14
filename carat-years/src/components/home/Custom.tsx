@@ -38,10 +38,6 @@ export default function Custom() {
             </div>
           </div>
         </div>
-        <p className="text-center text-lg sm:text-xl">
-          Join us
-          <span className="text-[#957127]"> @Caratyears</span>
-        </p>
       </div>
     </div>
   );
