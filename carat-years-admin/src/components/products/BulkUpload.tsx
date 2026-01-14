@@ -8,7 +8,8 @@ type BulkUploadProps = {
 };
 
 export default function BulkUpload({ onClose }: BulkUploadProps) {
-  const [file, setFile] = useState<File | null>(null);
+ const [, setFile] = useState<File | null>(null);
+
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState("");
 

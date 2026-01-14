@@ -1,7 +1,6 @@
 import {
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   RowSelectionState,
