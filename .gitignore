@@ -1,0 +1,78 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Production
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
+# Misc
+.DS_Store
+*.pem
+*.log
+*.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+*.js.map
+
+# IDEs and editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend specific
+carat-years-backend/dist/
+carat-years-backend/src/uploads/
+carat-years-backend/*.js
+carat-years-backend/*.js.map
+
+# Frontend specific
+carat-years/dist/
+carat-years-admin/dist/
+
+# Cache
+.cache/
+.eslintcache
+.npm
+.yarn-integrity
+
+# Temporary files
+*.tmp
+*.temp
+mockapi.js
+
