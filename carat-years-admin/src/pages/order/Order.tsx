@@ -40,21 +40,21 @@ export default function Order() {
   const { mutate: deleteMany } = useDeleteManyOrders();
   const { open } = useDeleteDialog();
 
-  const handleDelete = () => {
-    const ids = Object.keys(rowSelection)
-      .map((i) => data?.data?.[Number(i)]?._id)
-      .filter(Boolean) as string[];
+const handleDelete = () => {
+  // rowSelection keys are ORDER IDs
+  const ids = Object.keys(rowSelection);
 
-    if (!ids.length) return;
+  if (!ids.length) return;
 
-    open({
-      onConfirm: () => {
-        ids.length === 1 ? deleteOne(ids[0]) : deleteMany(ids);
-      },
-    });
+  open({
+    onConfirm: () => {
+      ids.length === 1 ? deleteOne(ids[0]) : deleteMany(ids);
+    },
+  });
 
-    setRowSelection({});
-  };
+  setRowSelection({});
+};
+
 
   console.log("Row Selection:", rowSelection);
 

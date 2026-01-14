@@ -74,13 +74,13 @@ export default function User() {
           label="User"
           onClose={handleClose}
           onView={() => {
-            const selectedIndexes = Object.keys(rowSelection).map(Number);
+  const selectedIds = Object.keys(rowSelection);
 
-            const selectedId = data?.data?.[selectedIndexes[0]]?._id;
-            if (selectedId) {
-              navigate(`/dashboard/users/${selectedId}`);
-            }
-          }}
+  if (selectedIds.length !== 1) return;
+
+  navigate(`/dashboard/users/${selectedIds[0]}`);
+}}
+
           onDelete={handleDelete}
         />
       )}

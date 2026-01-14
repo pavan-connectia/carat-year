@@ -31,6 +31,11 @@ export const columns: ColumnDef<TProduct>[] = [
     accessorKey: "title",
     header: "Title",
   },
+  {
+    accessorKey: "productCode",
+    header: "Product Code",
+  },
+  
   { accessorKey: "order", header: "Order" },
   {
     accessorKey: "publish",

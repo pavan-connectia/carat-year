@@ -1,6 +1,7 @@
 import { TTestimonial } from "@/types/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
+import Img from "../shared/Img";
 
 export const columns: ColumnDef<TTestimonial>[] = [
   {
@@ -31,8 +32,8 @@ export const columns: ColumnDef<TTestimonial>[] = [
     accessorKey: "image",
     header: "Image",
     cell: ({ row }) => (
-      <img
-        src={`${import.meta.env.VITE_API_BASE_URL}/${row.original.image}`}
+      <Img
+        src={`${row.original.image}`}
         className="size-14 object-contain"
       />
     ),
