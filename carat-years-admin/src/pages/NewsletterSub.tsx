@@ -28,9 +28,10 @@ export default function NewsletterSub() {
   const [modalOpen, setModalOpen] = useState<"none" | "view">("none");
 
   const selectedId = Object.keys(rowSelection)[0];
-  const selectedData =
-    data?.data?.find((_: any, idx: number) => idx === Number(selectedId)) ??
-    null;
+
+const selectedData =
+  data?.data?.find((item: any) => item._id === selectedId) ?? null;
+
 
   const handleDelete = () => {
     const selectedIndexes = Object.keys(rowSelection).map(Number);
