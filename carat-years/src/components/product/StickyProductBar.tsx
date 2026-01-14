@@ -1,5 +1,3 @@
-// components/product/StickyProductBar.tsx
-import FloatingWhatsapp from "@/components/shared/FloatingWhtasapp";
 
 interface StickyBarProps {
     visible: boolean;

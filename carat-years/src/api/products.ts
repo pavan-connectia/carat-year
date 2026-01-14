@@ -34,20 +34,6 @@ export const getFilteredProducts = async ({
   if (search) params.set("search", search);
   else params.delete("search");
 
-  // ✅ LIST OF FILTER KEYS SIDEBAR CONTROLS
-  const sidebarKeys = [
-    "style",
-    "stone",
-    "shape",
-    "metal",
-    "color",
-    "minPrice",
-    "maxPrice",
-    "tags",
-    "gender",
-    "occsasion",
-  ];
-
 
   // ✅ APPLY SIDEBAR FILTERS
   Object.entries(filters).forEach(([key, value]) => {
