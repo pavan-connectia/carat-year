@@ -28,8 +28,9 @@ export default function ProductDetail() {
   const [showSticky, setShowSticky] = useState(false);
   const [discountPreview, setDiscountPreview] = useState<any>(null);
   const { mutate: previewDiscount } = usePreviewDiscount();
+  const [isCalculating, setIsCalculating] = useState(false);
 
-  /* ---------- DERIVED DATA ---------- */
+
 
   const selectedVariation = useMemo(() => {
     if (!product?.variations) return null;
@@ -51,7 +52,6 @@ export default function ProductDetail() {
     return found || selectedShapeObj.carats[0];
   }, [selectedShapeObj, selectedCarat]);
 
-  /* ---------- DYNAMIC PRICE CALCULATION ---------- */
 
   const calculatedDiamondDetails = useMemo(() => {
     if (!selectedCaratObj?.diamondCategory) return { total: 0, breakdown: [] };
@@ -59,9 +59,8 @@ export default function ProductDetail() {
     let total = 0;
     const breakdown = selectedCaratObj.diamondCategory.map((cat: string, index: number) => {
       const catNumber = parseInt(cat.replace("D", ""));
-      const isDynamic = catNumber >= 6 && catNumber <= 10;
+      const isDynamic = catNumber >= 2 && catNumber <= 10;
 
-      // Dynamic: Rate * User Selection | Static: DB Amount
       const diamondRate = selectedCaratObj.diamondRate?.[index] || 0;
       const diamondAmt = selectedCaratObj.diamondAmt?.[index] || 0;
       const calculatedAmt = isDynamic
@@ -75,7 +74,6 @@ export default function ProductDetail() {
     return { total, breakdown };
   }, [selectedCaratObj, selectedCarat]);
 
-  /* ---------- AUTO DEFAULT SELECTION ---------- */
 
   useEffect(() => {
     if (product?.variations?.[0]) {
@@ -102,14 +100,13 @@ export default function ProductDetail() {
     }
   }, [selectedCaratObj]);
 
-  /* ---------- DISCOUNT & PRICE OBJECT ---------- */
 
   useEffect(() => {
     if (!selectedCaratObj) return;
-    
-    const dynamicGross = (selectedCaratObj.metalAmt || 0) + 
-                        (selectedCaratObj.labourAmt || 0) + 
-                        calculatedDiamondDetails.total;
+
+    const dynamicGross = (selectedCaratObj.metalAmt || 0) +
+      (selectedCaratObj.labourAmt || 0) +
+      calculatedDiamondDetails.total;
 
     previewDiscount(
       {
@@ -121,13 +118,18 @@ export default function ProductDetail() {
         },
       },
       {
-        onSuccess: (res) => setDiscountPreview(res.data),
-        onError: () => setDiscountPreview(null),
+        onSuccess: (res) => {
+          setDiscountPreview(res.data);
+          setIsCalculating(false);
+        },
+        onError: () => {
+          setDiscountPreview(null);
+          setIsCalculating(false);
+        }
       }
     );
-  }, [selectedCaratObj, calculatedDiamondDetails, previewDiscount]);
+  }, [selectedCaratObj, calculatedDiamondDetails, previewDiscount, selectedSize]);
 
-  /* ---------- STICKY BAR SCROLL HANDLER ---------- */
 
   useEffect(() => {
     const handleScroll = () => {
@@ -137,19 +139,18 @@ export default function ProductDetail() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    handleScroll()
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* ---------- SELECTED SIZE OBJECT ---------- */
 
   const selectedSizeObj = useMemo(() => {
     if (!selectedCaratObj) return null;
-    
-    const grossValue = (selectedCaratObj.metalAmt || 0) + 
-                      (selectedCaratObj.labourAmt || 0) + 
-                      calculatedDiamondDetails.total;
+
+    const grossValue = (selectedCaratObj.metalAmt || 0) +
+      (selectedCaratObj.labourAmt || 0) +
+      calculatedDiamondDetails.total;
 
     return {
       goldRate: selectedCaratObj.metalRate,
@@ -163,7 +164,6 @@ export default function ProductDetail() {
     };
   }, [selectedCaratObj, calculatedDiamondDetails, discountPreview]);
 
-  /* ---------- ADD TO CART HANDLER ---------- */
 
   const handleAddToCart = () => {
     if (!token) {
@@ -192,8 +192,27 @@ export default function ProductDetail() {
     });
   };
 
+  useEffect(() => {
+    if (!selectedVariation || !selectedShapeObj || !selectedCaratObj) return;
+    setIsCalculating(true);
+  }, [
+    selectedMetal,
+    selectedColor,
+    selectedShape,
+    selectedCarat,
+    selectedSize,
+  ]);
+
+
+
   return (
     <>
+
+      {isCalculating && (
+        <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+          <img src="/loader.gif" className="h-20 w-20" />
+        </div>
+      )}
       <StickyProductBar
         visible={showSticky}
         product={product}
@@ -201,6 +220,11 @@ export default function ProductDetail() {
         onAddToCart={handleAddToCart}
         token={token ?? null}
         navigate={navigate}
+        isCalculating={isCalculating}
+        selectedShape={selectedShape}
+        selectedMetal={selectedMetal}
+        selectedCarat={selectedCarat}
+        selectedColor={selectedColor}
       />
 
       <ProductInfo
@@ -220,12 +244,12 @@ export default function ProductDetail() {
         setSelectedCarat={setSelectedCarat}
         setSelectedSize={setSelectedSize}
         discountPreview={discountPreview}
+        isCalculating={isCalculating}
       />
 
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
           <div className="lg:w-1/2">
-            {/* Left side content goes here - likely product images */}
           </div>
           <div className="flex flex-col gap-6 lg:w-1/2">
             <ProductPriceBreakup
@@ -239,7 +263,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
-      
+
       <SimilarProducts tags={product?.tags ?? []} currentId={product?._id ?? ""} />
       <FloatingWhatsapp text={`I need more information about this product (Code: ${product?.productCode})`} />
       <CraftedByLook />

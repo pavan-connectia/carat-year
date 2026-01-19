@@ -11,6 +11,8 @@ export default function ProductPriceBreakup({
 }: any) {
   const [show, setShow] = useState(false);
 
+  console.log({ selectedCaratObj, selectedSizeObj });
+
   return (
     <div className="rounded-lg bg-[#F8F2E7] p-4">
       <button
@@ -22,9 +24,8 @@ export default function ProductPriceBreakup({
       </button>
 
       <div
-        className={`overflow-hidden transition-all duration-500 ${
-          show ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`overflow-hidden transition-all duration-500 ${show ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         <table className="w-full text-left text-sm">
           <thead className="text-[#957127]">
@@ -43,7 +44,7 @@ export default function ProductPriceBreakup({
                 {selectedMetal} {selectedColor}
               </td>
               <td className="px-4 py-2">
-                ₹{selectedSizeObj?.goldRate}
+                ₹{selectedSizeObj?.goldRate} / gram
               </td>
               <td className="px-4 py-2">
                 {selectedSizeObj?.goldWeight}g
@@ -65,7 +66,7 @@ export default function ProductPriceBreakup({
                       Diamond ({cat})
                     </td>
                     <td className="px-4 py-2">
-                      ₹{selectedCaratObj?.diamondRate?.[index]?.toLocaleString()}
+                      ₹{selectedCaratObj?.diamondRate?.[index]?.toLocaleString()} / gram
                     </td>
                     <td className="px-4 py-2">
                       {isDynamic
@@ -123,7 +124,7 @@ export default function ProductPriceBreakup({
 
             {/* Total */}
             <tr className="border-t border-amber-200">
-              <td className="px-4 py-2 font-bold">Total Net</td>
+              <td className="px-4 py-2 font-bold">Total Net (Incl. Tax)</td>
               <td></td>
               <td></td>
               <td className="px-4 py-2 font-bold">

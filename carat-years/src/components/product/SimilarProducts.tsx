@@ -8,17 +8,18 @@ export default function SimilarProducts({ tags, currentId }: { tags: string[], c
   const { data } = useProductsByTag(firstTag);
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl ">
       <Heading>You May Also Like</Heading>
 
-      <div className="flex flex-wrap items-center px-5 sm:px-8 md:px-10">
-        {data?.data
+     
+      <div className="flex flex-wrap items-center mt-4 justify-center gap-6 px-5 sm:px-8 md:px-10">
+                {data?.data
           ?.filter((p: any) => p?._id !== currentId)
           ?.slice(0, 3)
           ?.map((p: any) => (
             <ProductCard product={p} key={p?._id} />
           ))}
-      </div>
+              </div>
     </div>
   );
 }
