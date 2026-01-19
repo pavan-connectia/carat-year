@@ -122,20 +122,19 @@ export default function StickyProductBar({
                             <h2 className="text-[#96722c] text-base lg:text-lg italic font-bold">
                                 Sale Price: ₹{selectedSizeObj.totalValue?.toLocaleString()}
                             </h2>
-                            <div className="flex flex-col lg:flex-row items-center lg:items-center gap-1 lg:gap-3 mt-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xs lg:text-sm text-gray-400 line-through">
-                                        ₹{selectedSizeObj.grossValue?.toLocaleString()}
-                                    </span>
-                                    <span className="text-[9px] lg:text-xs text-gray-500">(incl. Taxes)</span>
-                                </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-gray-400 line-through text-xs">
+                                    ₹{selectedSizeObj.grossValue?.toLocaleString()}
+                                </span>
+                                <span className="text-[9px]">(incl. Taxes)</span>
                                 {selectedSizeObj.discountValue > 0 && (
-                                    <div className="bg-green-100 px-3 py-1 rounded-full">
-                                        <span className="text-[10px] lg:text-xs font-medium text-green-700">
+                                    <div className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                        <span className="text-[10px] font-medium text-gray-700">
                                             You Save ₹{selectedSizeObj.discountValue?.toLocaleString()}
                                         </span>
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     </div>
