@@ -76,6 +76,14 @@ export default function ProductCard({ product }: ProductCardProps) {
       )
   );
 
+  const metalBgMap: Record<string, string> = {
+    "Yellow Gold": "/Metal/Yellow Gold.png",
+    "Rose Gold": "/Metal/Rose Gold.png",
+    "White Gold": "/Metal/White Gold.png",
+    "Silver": "/Metal/White Gold.png",
+    "Platinum": "/Metal/White Gold.png",
+  };
+
 
   return (
     <div className="group relative max-w-[280px] min-w-[280px] overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -153,22 +161,16 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <button
                   onClick={() => setSelectedVariationIndex(i)}
                   className={`
-            size-5 rounded-full border shadow-sm transition cursor-pointer
-            ${isSelected ? "border-gray-500 " : ""}
-            ${isHovered ? "border-black" : ""}
-          `}
+                   relative flex items-center justify-center h-7 w-7 rounded-full border-2 transition-all
+                   ${isSelected ? "border-[#957127] scale-110 " : ""}
+                 `}
                   style={{
-                    background: v.color?.toLowerCase().includes("yellow")
-                      ? "linear-gradient(to bottom, #E1CA98, #FDEFD0)"
-                      : v.color?.toLowerCase().includes("white")
-                        ? "linear-gradient(to bottom, #D9D9D9, #FFF2D6)"
-                        : v.color?.toLowerCase().includes("rose")
-                          ? "linear-gradient(to bottom, #FFE1E1, #FC9D9D)"
-                          : "#f5f5f5",
+                    backgroundImage: `url("${metalBgMap[v.color] || "/Metal/White Gold.png"}")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                   }}
                 />
 
-                {/* Tooltip */}
                 {isHovered && (
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-gray-300 bg-white px-2 py-1 text-xs text-black shadow">
                     {v.color}
