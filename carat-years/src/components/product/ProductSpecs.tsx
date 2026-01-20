@@ -134,7 +134,7 @@ export default function ProductSpecs({
                     style={{ backgroundImage: `url("${bgImage}")`, backgroundSize: "cover" }}
                   >
                     <span className="text-[10px] font-bold text-gray-800">
-                      {v.color === "Silver" ? "SL" : v.color === "Platinum" ? "PT" : v.metal}
+                      {v.color === "Silver" ? "SL" : v.color === "Platinum" ? "PL" : v.metal}
                     </span>
                   </div>
                   <span className="lg:hidden text-[10px] text-gray-500 font-medium">{v.color}</span>
