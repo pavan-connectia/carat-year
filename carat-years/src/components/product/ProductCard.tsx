@@ -161,7 +161,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <button
                   onClick={() => setSelectedVariationIndex(i)}
                   className={`
-                   relative flex items-center justify-center h-7 w-7 rounded-full border-2 transition-all
+                   relative flex items-center justify-center h-7 w-7 rounded-full border-2 transition-all cursor-pointer
                    ${isSelected ? "border-[#957127] scale-110 " : ""}
                  `}
                   style={{

@@ -28,8 +28,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
   });
 
   const [categories, setCategories] = useState<Record<string, boolean>>({
-    ringsMen: false,
-    ringsWomen: false,
+    rings: false,
     necklaces: false,
     earrings: false,
     bangles: false,
@@ -44,7 +43,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
   const [shape, setShape] = useState<Record<string, boolean>>({});
   const [metal, setMetal] = useState<Record<string, boolean>>({});
   const [gender, setGender] = useState<Record<string, boolean>>({});
-  const [occasion, setOccasion] = useState<Record<string, boolean>>({});
+  const [occsasion, setOccsasion] = useState<Record<string, boolean>>({});
 
 
   // Track selected price bucket ID
@@ -58,7 +57,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
     const finalShape = overrides.shape ?? shape;
     const finalMetal = overrides.metal ?? metal;
     const finalGender = overrides.gender ?? gender;
-    const finalOccasion = overrides.occasion ?? occasion;
+    const finalOccsasion = overrides.occsasion ?? occsasion;
 
     // Determine price range based on selection or override
     let finalPriceRange = [0, 10000000];
@@ -77,7 +76,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
       shape: Object.keys(finalShape).filter((k) => finalShape[k]),
       metal: Object.keys(finalMetal).filter((k) => finalMetal[k]),
       gender: Object.keys(finalGender).filter(k => finalGender[k]),
-      Occasion: Object.keys(finalOccasion).filter(k => finalOccasion[k]),
+      occsasion: Object.keys(finalOccsasion).filter(k => finalOccsasion[k]),
       priceRange: finalPriceRange,
     });
   };
@@ -167,7 +166,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
             <button
               onClick={() => {
                 setCategories({
-                  ringsMen: false, ringsWomen: false, necklaces: false,
+                  rings: false, necklaces: false,
                   earrings: false, bangles: false, bracelets: false,
                   pendants: false, nosepins: false,
                 });
@@ -177,11 +176,11 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
                 setShape({});
                 setMetal({});
                 setGender({});
-                setOccasion({});
+                setOccsasion({});
                 setSelectedPriceId(null);
                 buildFilters({
                   categories: {}, designType: {}, carat: {},
-                  style: {}, shape: {}, metal: {}, gender: {}, occasion: {}, priceId: null
+                  style: {}, shape: {}, metal: {}, gender: {}, occsasion: {}, priceId: null
                 });
               }}
               className="text-sm text-blue-600 hover:text-blue-800"
@@ -269,13 +268,13 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
         )}
 
         {/* OCCASION */}
-        <FilterHeader title="occasion" sectionId="occasion" />
-        {sections.occasion && (
+        <FilterHeader title="occsasion" sectionId="occsasion" />
+        {sections.occsasion && (
           <FilterOptions
             options={["Everyday", "Office Wear", "Casual", "Party", "Engagement", "Wedding", "Luxury Collection"]}
-            selectedState={occasion}
-            setState={setOccasion}
-            filterKey="occasion"
+            selectedState={occsasion}
+            setState={setOccsasion}
+            filterKey="occsasion"
           />
         )}
 

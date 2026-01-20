@@ -22,14 +22,14 @@ export const NAV_LINKS: NavItem[] = [
             { label: "Eternity", href: "/q=eternity" },
           ]
         },
-        {
-          id: "stone",
-          title: "STONE",
-          items: [
-            { label: "Lab Grown", href: "/q=lab-grown" },
-            { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
-          ]
-        },
+        // {
+        //   id: "stone",
+        //   title: "STONE",
+        //   items: [
+        //     { label: "Lab Grown", href: "/q=lab-grown" },
+        //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
+        //   ]
+        // },
    
         { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Princess", href: "/q=pri" }, { label: "Emerald", href: "/q=eme" }, { label: "Pear", href: "/q=pea" }, { label: "Oval", href: "/q=ova" }] },
         {
@@ -58,7 +58,6 @@ export const NAV_LINKS: NavItem[] = [
       promos: [
         { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765345354/2.1742_q5szdm.jpg", label: "Shop All Engagement Rings", href: "/product?q=mens-rings" },
         { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765345354/2.1742_q5szdm.jpg", label: "Shop Last Chance Engagement Rings", href: "/product?q=womens-rings" },
-        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765345354/2.1742_q5szdm.jpg", label: "Shop Last Chance Engagement Rings", href: "/product?q=latest-ring" }
       ]
     }
   },
@@ -83,14 +82,14 @@ export const NAV_LINKS: NavItem[] = [
             { label: "Eternity", href: "/q=eternity" },
           ]
         },
-        {
-          id: "stone",
-          title: "STONE",
-          items: [
-            { label: "Lab Grown", href: "/q=lab-grown" },
-            { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
-          ]
-        },
+        // {
+        //   id: "stone",
+        //   title: "STONE",
+        //   items: [
+        //     { label: "Lab Grown", href: "/q=lab-grown" },
+        //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
+        //   ]
+        // },
         { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Princess", href: "/q=pri" }, { label: "Emerald", href: "/q=eme" }, { label: "Pear", href: "/q=pea" }, { label: "Oval", href: "/q=ova" }] },
         {
           id: "metal",
@@ -143,14 +142,14 @@ export const NAV_LINKS: NavItem[] = [
           ]
         },
 
-        {
-          id: "stone",
-          title: "STONE",
-          items: [
-            { label: "Lab Grown", href: "/q=lab-grown" },
-            { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
-          ]
-        },
+        // {
+        //   id: "stone",
+        //   title: "STONE",
+        //   items: [
+        //     { label: "Lab Grown", href: "/q=lab-grown" },
+        //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
+        //   ]
+        // },
         { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Pear", href: "/q=pea" }, { label: "Emerald", href: "/q=eme" }, { label: "Heart", href: "/q=hea" }] },
 
         {
@@ -178,8 +177,7 @@ export const NAV_LINKS: NavItem[] = [
       ],
       promos: [
         { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765517942/NK-004_12_twodko.png", label: "Shop All Pendants", href: "/product?q=pendants-necklaces" },
-        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765517942/NK-004_12_twodko.png", label: "Shop Pendants, Ready To Be Delivered Within 7-Working-Days", href: "/product?q=ready" },
-        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765517942/NK-004_12_twodko.png", label: "Shop Last Chance Pendants", href: "/product?q=lc" }
+        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765517942/NK-004_12_twodko.png", label: "Shop Pendants, Ready To Be Delivered Within 7-Working-Days", href: "/product?q=ready" }
       ]
     }
   },
@@ -205,14 +203,14 @@ export const NAV_LINKS: NavItem[] = [
           ]
         },
 
-        {
-          id: "stone",
-          title: "STONE",
-          items: [
-            { label: "Lab Grown", href: "/q=lab-grown" },
-            { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
-          ]
-        },
+        // {
+        //   id: "stone",
+        //   title: "STONE",
+        //   items: [
+        //     { label: "Lab Grown", href: "/q=lab-grown" },
+        //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
+        //   ]
+        // },
         { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Princess", href: "/q=pri" }, { label: "Oval", href: "/q=ova" }, { label: "Emerald", href: "/q=eme" }] },
         {
           id: "metal",
@@ -238,8 +236,7 @@ export const NAV_LINKS: NavItem[] = [
       ],
       promos: [
         { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765518092/TBR56_9_iinjay.jpg", label: "Shop All Bracelets", href: "/product?q=all" },
-        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765518092/TBR56_9_iinjay.jpg", label: "Shop Last Chance Bracelets", href: "/product?q=lc" },
-        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765518092/TBR56_9_iinjay.jpg", label: "Shop Bracelets, Ready To Be Delivered Within 7-Working-Days", href: "/product?q=ready" }
+        { image: "https://res.cloudinary.com/dsmrucsek/image/upload/v1765518092/TBR56_9_iinjay.jpg", label: "Shop Last Chance Bracelets", href: "/product?q=lc" }
       ]
     }
   },
@@ -268,8 +265,6 @@ export const NAV_LINKS: NavItem[] = [
       promos: [
         { image: "https://picsum.photos/seed/gift1/300/200", label: "Gift Sets", href: "product?/q=sets" },
         { image: "https://picsum.photos/seed/gift2/300/200", label: "Gift Guide", href: "product?/q=guide" },
-        { image: "https://picsum.photos/seed/gift3/300/200", label: "Leaf & Clover Collection", href: "product?/q=leaf" },
-        { image: "https://picsum.photos/seed/gift4/300/200", label: "Valentine's Gift Guide", href: "product?/q=val" }
       ]
     }
   },

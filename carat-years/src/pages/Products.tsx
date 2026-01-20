@@ -6,43 +6,47 @@ import { useFilteredProducts } from "@/hooks/useProducts";
 import ProductCard from "../components/product/ProductCard";
 import { Sidebar } from "@/components/product/Sidebar";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router";
+
 
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [initialized, setInitialized] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const navigate = useNavigate();
+
   const page = 1;
 
   const location = useLocation();
 
-useEffect(() => {
-  const params = new URLSearchParams(location.search);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
 
-  const q = params.get("q"); // category slug
-  const tags = params.get("tags");
-  const metal = params.get("metal");
-  const shape = params.get("shape");
-  const minPrice = params.get("minPrice");
-  const maxPrice = params.get("maxPrice");
+    const q = params.get("q"); // category slug
+    const tags = params.get("tags");
+    const metal = params.get("metal");
+    const shape = params.get("shape");
+    const minPrice = params.get("minPrice");
+    const maxPrice = params.get("maxPrice");
 
-  setFilters({
-    categories: tags
-      ? tags.split(",")
-      : q
-      ? [q]            // ✅ USE q AS CATEGORY
-      : [],
-    metal: metal ? metal.split(",") : [],
-    shape: shape ? shape.split(",") : [],
-    priceRange: [
-      minPrice ? Number(minPrice) : 0,
-      maxPrice ? Number(maxPrice) : 500000,
-    ],
-  });
+    setFilters({
+      categories: tags
+        ? tags.split(",")
+        : q
+          ? [q]            // ✅ USE q AS CATEGORY
+          : [],
+      metal: metal ? metal.split(",") : [],
+      shape: shape ? shape.split(",") : [],
+      priceRange: [
+        minPrice ? Number(minPrice) : 0,
+        maxPrice ? Number(maxPrice) : 500000,
+      ],
+    });
 
-  setSearchQuery(""); // ✅ q is NOT search text
-  setInitialized(true);
-}, [location.search]);
+    setSearchQuery(""); // ✅ q is NOT search text
+    setInitialized(true);
+  }, [location.search]);
 
 
 
@@ -90,40 +94,40 @@ useEffect(() => {
 
       {/* Mobile Search & Filter Bar */}
       <section className="container mx-auto mb-4 sm:mb-6 px-4 sm:px-6 lg:hidden">
-  <div className="flex items-center gap-2 sm:gap-3">
-    <div className="relative flex-1">
-      <span className="absolute inset-y-0 left-3 flex items-center text-[#957127]">
-        {/* Fixed icon size - consistent across breakpoints */}
-        <Search className="h-4 w-4 sm:h-5 sm:w-5" />
-      </span>
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full rounded-full border border-[#957127] pl-9 sm:pl-10 pr-8 sm:pr-10 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#957127] focus:border-[#957127]"
-      />
-      {searchQuery && (
-        <button
-          onClick={() => setSearchQuery("")}
-          className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
-        >
-          {/* Fixed clear icon size */}
-          <X className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
-      )}
-    </div>
-    <Button
-      onClick={() => setIsMobileFilterOpen(true)}
-      className="rounded-full border border-[#957127] bg-white px-3 py-2.5 text-[#957127] hover:bg-gray-50 min-w-11 sm:min-w-[60px]"
-      aria-label="Open filters"
-    >
-      {/* Fixed filter icon size */}
-      <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
-      <span className="hidden sm:inline ml-2 text-sm">Filters</span>
-    </Button>
-  </div>
-</section>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="relative flex-1">
+            <span className="absolute inset-y-0 left-3 flex items-center text-[#957127]">
+              {/* Fixed icon size - consistent across breakpoints */}
+              <Search className="h-4 w-4 sm:h-5 sm:w-5" />
+            </span>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-full border border-[#957127] pl-9 sm:pl-10 pr-8 sm:pr-10 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#957127] focus:border-[#957127]"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600"
+              >
+                {/* Fixed clear icon size */}
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
+              </button>
+            )}
+          </div>
+          <Button
+            onClick={() => setIsMobileFilterOpen(true)}
+            className="rounded-full border border-[#957127] bg-white px-3 py-2.5 text-[#957127] hover:bg-gray-50 min-w-11 sm:min-w-[60px]"
+            aria-label="Open filters"
+          >
+            {/* Fixed filter icon size */}
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline ml-2 text-sm">Filters</span>
+          </Button>
+        </div>
+      </section>
 
       {/* Desktop Search */}
       <section className="hidden lg:block container mx-auto mb-8 px-6">
@@ -228,6 +232,7 @@ useEffect(() => {
                       onClick={() => {
                         setSearchQuery("");
                         setFilters({});
+                        navigate("/product", { replace: true });
                       }}
                       className="bg-[#957127] hover:bg-[#7a5c20] text-white px-4 py-2 text-sm"
                     >
@@ -265,7 +270,7 @@ useEffect(() => {
 
       {/* Bottom Sections */}
       <div className="mt-8 sm:mt-12 md:mt-16 lg:mt-20">
-       {/* <Testimonial /> */}
+        {/* <Testimonial /> */}
         <CraftedByLook />
       </div>
     </div>

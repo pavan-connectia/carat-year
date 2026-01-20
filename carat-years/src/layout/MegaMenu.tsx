@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { type MegaMenuColumn, type MegaMenuPromo } from '@/types/api';
-import { Circle, Diamond, Heart, Square } from 'lucide-react';
 import { mapMenuToBackendFilters, generateFilterQuery } from '@/lib/menuFilterUtils';
 
 interface MegaMenuProps {
@@ -17,13 +16,34 @@ interface MegaMenuProps {
 
 const SubMenuIcon = ({ type, label }: { type: string; label: string }) => {
   if (type === 'SHAPE') {
-    if (label.includes('Round')) return <Circle className="size-3 text-gray-400" />;
-    if (label.includes('Princess') || label.includes('Emerald')) return <Square className="size-3 text-gray-400" />;
-    if (label.includes('Heart')) return <Heart className="size-3 text-gray-400" />;
-    return <Diamond className="size-3 text-gray-400" />;
+    if (label.includes('Round')) return <img src="/shape/RND.svg" alt="Round" className="size-5" />;
+    if (label.includes('Princess')) return <img src="/shape/princess.svg" alt="Round" className="size-5" />;
+    if (label.includes('Heart')) return <img src="/shape/HRT.svg" alt="Round" className="size-5" />;
+    if (label.includes('Oval')) return <img src="/shape/OVL.svg" alt="Round" className="size-5" />;
+    if (label.includes('Emerald')) return <img src="/shape/EMR.svg" alt="Round" className="size-5" />;
+    if (label.includes('Marquise')) return <img src="/shape/MQS.svg" alt="Round" className="size-5" />;
+    if (label.includes('Pear')) return <img src="/shape/PER.svg" alt="Round" className="size-5" />;
+    if (label.includes('Cushion')) return <img src="/shape/CUS.svg" alt="Round" className="size-5" />;
+    if (label.includes('Radiant')) return <img src="/shape/RAD.svg" alt="Round" className="size-5" />;
   }
   if (type === 'STONE') {
     return <div className="size-3 rounded-full bg-[#B4975A]/40" />;
+  }
+  if (type === 'METAL') {
+    if (label.includes('White Gold')) return <img src="/Metal/White Gold.png" alt="White Gold" className="size-5" />;
+    if (label.includes('Yellow Gold')) return <img src="/Metal/Yellow Gold.png" alt="Yellow Gold" className="size-5" />;
+    if (label.includes('Rose Gold')) return <img src="/Metal/Rose Gold.png" alt="Rose Gold" className="size-5" />;
+    if (label.includes('Platinum')) return <img src="/Metal/White Gold.png" alt="Platinum" className="size-5" />;
+    if (label.includes('Silver')) return <img src="/Metal/White Gold.png" alt="Silver" className="size-5" />;
+  }
+  if(type === 'STYLE'){
+    if(label.includes('Solitaire')) return <img src="/style/sclassicsolitair.svg" alt="White Gold" className="size-8" />;
+    if(label.includes('Side Stone')) return <img src="/style/sside-stone-ring.svg" alt="White Gold" className="size-8" />;
+    if(label.includes('Toi Et Moi')) return <img src="/style/toi-et-moi-rings.svg" alt="White Gold" className="size-8" />;
+    if(label.includes('3 Stone')) return <img src="/style/sthreestone.svg" alt="White Gold" className="size-8" />;
+    if(label.includes('5 Stone')) return <img src="/style/five-tone.svg" alt="White Gold" className="size-8" />;
+    if(label.includes('7 Stone')) return <img src="/style/seven-stone.svg" alt="White Gold" className="size-8" />;
+    if(label.includes('Eternity')) return <img src="/style/enternity-ring.svg" alt="White Gold" className="size-8" />;
   }
   return null;
 };
