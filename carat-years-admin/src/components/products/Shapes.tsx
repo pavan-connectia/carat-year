@@ -74,9 +74,8 @@ export default function Shapes({ vIndex, control, setValue }: any) {
                         "Marquise",
                         "Pear",
                         "Heart",
-                        "MARQUISE",
-                        "RADIANT MARQUISE PEAR ROUND EMERALD PRINCESS MARQUISE PEAR",
-                        "PRINCESS"
+                        "Radiant",
+                        "Princess"
                       ].map((shape) => (
                         <SelectItem key={shape} value={shape}>
                           {shape}

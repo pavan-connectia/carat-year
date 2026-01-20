@@ -17,7 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { FormField, FormItem, FormLabel, FormMessage, FormControl } from "../ui/form";
 
-const styles = ["solitaire", "Side-Stone", "3-Stone", "5-stone", "7-stone", "Eternity", "Anniversary"];
+const styles = ["Solitaire", "Side-Stone", "3-Stone", "5-stone", "7-stone", "Eternity", "Anniversary"];
 
 export default function StyleDD({ control }: { control: any }) {
   return (
