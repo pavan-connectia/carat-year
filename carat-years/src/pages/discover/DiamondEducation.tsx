@@ -101,9 +101,7 @@ export default function DiamondEducation() {
           Get in Touch
         </h2>
         <p className="leading-relaxed text-gray-600">
-          If you’d like to speak with an expert gemologist or a member of our
-          friendly Customer Care Team about choosing the perfect diamond, we’re
-          here to help. Reach out via Live Chat or give us a call at{" "}
+          If you’d like to speak with an expert or a member of our Customer Care Team about choosing the perfect diamond, we’re here to help.{" "}
           <span className="font-medium text-gray-800">+91 98765 43210</span>.
         </p>
         <Link

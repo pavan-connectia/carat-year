@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from "react-router";
 import Layout from "./layout/Layout";
 import AccountLayout from "./pages/account/AccountLayout";
 import CookieConsent from "./components/shared/CookieConsent";
-import SubscribePopup from "./components/shared/SubscribePopup";
+// import SubscribePopup from "./components/shared/SubscribePopup";
 import ProtectedRoute from "./layout/ProtectedRoute";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -156,7 +156,7 @@ export default function App() {
 
       <CookieConsent variant="center" />
 
-      <SubscribePopup />
+      {/* <SubscribePopup /> */}
     </Suspense>
   );
 }

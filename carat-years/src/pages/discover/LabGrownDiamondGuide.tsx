@@ -14,9 +14,9 @@ export default function LabGrownDiamondGuide() {
           loved? Let’s dive into the world of lab-grown diamonds and uncover why
           they’re becoming the modern choice for conscious buyers.
         </p>
-        <p className="mt-2 text-sm text-gray-400">
+        {/* <p className="mt-2 text-sm text-gray-400">
           Carat Years Editorial Team • October 15, 2025
-        </p>
+        </p> */}
         <img
           src="/lab/lab1.png"
           alt="Lab Grown Diamonds"

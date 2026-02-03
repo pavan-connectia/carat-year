@@ -11,7 +11,7 @@ const links = [
     heading: "Discover",
     items: [
       { title: "FAQs", href: "/faqs" },
-      { title: "Blogs", href: "/blogs" },
+      { title: "Blogs", href: "/blog" },
       { title: "Diamond Guide", href: "/diamond-education" },
       { title: "Lab Grown Diamonds", href: "/lab-grown-diamond-guide" },
     ],

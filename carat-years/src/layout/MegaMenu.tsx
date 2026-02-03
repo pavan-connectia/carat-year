@@ -123,9 +123,10 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                         {group.items.map((item, itemIdx) => (
                           <li key={itemIdx}>
                             <Link 
-                              to={generateFilterHref(group.title, item.label, item.href)}
-                              className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group"
-                            >
+  to={generateFilterHref(column.title, item.label, item.href)}
+  className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
+>
+
                               <SubMenuIcon type={group.title} label={item.label} />
                               {item.label}
                             </Link>
@@ -140,9 +141,10 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                   {column.items.map((item, itemIdx) => (
                     <li key={itemIdx}>
                       <Link 
-                        to={generateFilterHref(column.title, item.label, item.href)}
-                        className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group"
-                      >
+  to={generateFilterHref(column.title, item.label, item.href)}
+  className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
+>
+
                         <SubMenuIcon type={column.title} label={item.label} />
                         {item.label}
                       </Link>

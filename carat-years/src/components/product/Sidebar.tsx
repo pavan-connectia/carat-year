@@ -254,18 +254,30 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
         )}
 
         {/* CARAT */}
-        <FilterHeader title="Carat" sectionId="carat" />
-        <p className="text-xs text-muted-foreground mt-1 text-center">
-          Total diamond weight of the jewellery piece
-        </p>
-        {sections.carat && (
-          <FilterOptions
-            options={["Below 0.25 ct", "0.25 – 0.50 ct", "0.50 – 1 ct", "1 – 1.5 ct", "1.5 – 2 ct", "Above 2 ct"]}
-            selectedState={carat}
-            setState={setCarat}
-            filterKey="carat"
-          />
-        )}
+<FilterHeader title="Carat" sectionId="carat" />
+
+{sections.carat && (
+  <>
+    <p className="text-xs text-muted-foreground mt-1 text-center">
+      Total diamond weight of the jewellery piece
+    </p>
+
+    <FilterOptions
+      options={[
+        "Below 0.25 ct",
+        "0.25 – 0.50 ct",
+        "0.50 – 1.00 ct",
+        "1.00 – 1.50 ct",
+        "1.50 – 2.00 ct",
+        "Above 2.00 ct",
+      ]}
+      selectedState={carat}
+      setState={setCarat}
+      filterKey="carat"
+    />
+  </>
+)}
+
 
         {/* OCCASION */}
         <FilterHeader title="occsasion" sectionId="occsasion" />

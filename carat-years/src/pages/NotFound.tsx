@@ -41,7 +41,6 @@ export default function NotFound() {
               service@carat-years.com
             </a>
           </p>
-          <p>📞 999999 99999</p>
         </div>
 
         <Button
