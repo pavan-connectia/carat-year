@@ -50,7 +50,7 @@ export default function SubscribePopup() {
     const dismissed = localStorage.getItem("newsletter-dismissed");
 
     if (!subscribed && !dismissed) {
-      const timer = setTimeout(() => setIsOpen(true), 8000); // show after 8s
+      const timer = setTimeout(() => setIsOpen(true), 8000); 
       return () => clearTimeout(timer);
     }
   }, []);

@@ -53,14 +53,50 @@ export const mapMenuToBackendFilters = (
 // Helper mapping functions
 const mapStyleToBackend = (style: string): string => {
   const styleMap: Record<string, string> = {
-    'Solitaire': 'solitaire',
-    'Side Stone': 'side-stone', // Matches JSON "side-stone"
-    'Toi Et Moi': 'toi-et-moi',
-    '3 Stone': '3-stone',
-    '5 Stone': '5-stone',
-    '7 Stone': '7-stone',
-    'Eternity': 'eternity',
-  };
+  // Rings
+  'Solitaire': 'solitaire',
+  'Side Stone': 'side-stone',
+  'Toi Et Moi': 'toi-et-moi',
+  '3 Stone': '3-stone',
+  '5 Stone': '5-stone',
+  '7 Stone': '7-stone',
+  'Eternity': 'eternity',
+  'Halo': 'halo',
+  'Trilogy': 'trilogy',
+  'Ethereal': 'ethereal',
+  'Bridal Set': 'bridal-set',
+  'Plain': 'plain',
+  'Diamond': 'diamond',
+
+  // Earrings
+  'Stud': 'stud',
+  'Hoop': 'hoop',
+  'Drop': 'drop',
+  'Cluster': 'cluster',
+  'Designer': 'designer',
+  'Gemstone': 'gemstone',
+  'Everyday': 'everyday',
+  "Men's": 'mens',
+
+  // Pendants
+  'Heart': 'heart',
+  'Infinity': 'infinity',
+  'Religious': 'religious',
+  'Initial': 'initial',
+
+  // Bracelets
+  'Tennis': 'tennis',
+  'Chain': 'chain',
+  'Friendship': 'friendship',
+  'Bangles': 'bangles',
+
+  // Necklaces
+  'Layered': 'layered',
+  'Choker': 'choker',
+  'Statement': 'statement',
+  'Bridal': 'bridal'
+}
+;
   return styleMap[style] || style.toLowerCase().replace(/\s+/g, '-');
 };
 
@@ -77,13 +113,17 @@ const mapStoneToBackend = (stone: string): string => {
 
 const mapShapeToBackend = (shape: string): string => {
   const shapeMap: Record<string, string> = {
+
     'Round': 'Round',
     'Princess': 'Princess',
     'Emerald': 'Emerald',
     'Pear': 'Pear',
     'Oval': 'Oval',
     'Heart': 'Heart',
-    'Marquise': 'Marquise'
+    'Marquise': 'Marquise',
+    'Cushion': 'Cushion',
+    'Radiant': 'Radiant',
+    'Trilliant': 'Trilliant'
   };
   return shapeMap[shape] || shape.toLowerCase().replace(/\s+/g, '-');
 };

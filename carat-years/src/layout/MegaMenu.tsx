@@ -105,14 +105,22 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
     >
       <div className="container mx-auto px-6 py-10 flex flex-wrap lg:flex-nowrap">
 
-        <div className={`flex-1 ${isSingleColumn ? 'grid grid-cols-1 gap-8' : layoutType === 'split' ? 'grid grid-cols-2 gap-12' : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'}`}>
+        {/* Updated grid-cols logic below */}
+        <div className={`flex-1 ${
+          isSingleColumn 
+            ? 'grid grid-cols-1 gap-8' 
+            : layoutType === 'split' 
+              ? 'grid grid-cols-3 gap-12' // Changed from grid-cols-2 to grid-cols-3 to accommodate RECIPIENT, OCCASION, and PRICE in one row
+              : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'
+        }`}>
           {columns.map((column, idx) => (
             <div key={idx} className="flex flex-col">
-              <h2 className={`${isSingleColumn ? 'text-2xl font-playfair font-semibold mb-8' : layoutType === 'split' ? 'text-2xl font-playfair font-semibold mb-6' : 'text-[#B4975A] font-semibold text-xs tracking-widest mb-4 uppercase'}`}>
+              <h2 className={`${isSingleColumn ? 'text-2xl font-playfair font-semibold mb-8' : layoutType === 'split' ? 'text-xl font-playfair font-semibold mb-6 uppercase tracking-tight' : 'text-[#B4975A] font-semibold text-xs tracking-widest mb-4 uppercase'}`}>
                 {column.title}
               </h2>
               
               {column.groups ? (
+                // ... (Groups logic remains same)
                 <div className="space-y-8">
                   {column.groups.map((group, gIdx) => (
                     <div key={gIdx}>
@@ -123,10 +131,9 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                         {group.items.map((item, itemIdx) => (
                           <li key={itemIdx}>
                             <Link 
-  to={generateFilterHref(column.title, item.label, item.href)}
-  className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
->
-
+                              to={generateFilterHref(column.title, item.label, item.href)}
+                              className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
+                            >
                               <SubMenuIcon type={group.title} label={item.label} />
                               {item.label}
                             </Link>
@@ -141,10 +148,9 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                   {column.items.map((item, itemIdx) => (
                     <li key={itemIdx}>
                       <Link 
-  to={generateFilterHref(column.title, item.label, item.href)}
-  className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
->
-
+                        to={generateFilterHref(column.title, item.label, item.href)}
+                        className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
+                      >
                         <SubMenuIcon type={column.title} label={item.label} />
                         {item.label}
                       </Link>
@@ -175,9 +181,6 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                 </Link>
               ))}
             </div>
-            {/* <div className="mt-10 border-t border-gray-100 pt-6">
-               <Link to="/gift-cards" className="font-playfair text-lg text-[#B4975A] hover:underline">Gift Cards</Link>
-            </div> */}
           </div>
         )}
       </div>

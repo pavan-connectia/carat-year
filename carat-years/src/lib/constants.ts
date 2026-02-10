@@ -13,14 +13,21 @@ export const NAV_LINKS: NavItem[] = [
           id: "style",
           title: "STYLE",
           items: [
-            { label: "Solitaire", href: "/q=solitaire" },
-            { label: "Side Stone", href: "/q=side-stone" },
-            { label: "Toi Et Moi", href: "/q=toi-et-moi" },
-            { label: "3 Stone", href: "/q=3-stone" },
-            { label: "5 Stone", href: "/q=5-stone" },
-            { label: "7 Stone", href: "/q=7-stone" },
-            { label: "Eternity", href: "/q=eternity" },
-          ]
+  { label: "Solitaire", href: "/q=solitaire" },
+  { label: "Side Stone", href: "/q=side-stone" },
+  { label: "Toi Et Moi", href: "/q=toi-et-moi" },
+  { label: "3 Stone", href: "/q=3-stone" },
+  { label: "5 Stone", href: "/q=5-stone" },
+  { label: "7 Stone", href: "/q=7-stone" },
+  { label: "Eternity", href: "/q=eternity" },
+  { label: "Halo", href: "/q=halo" },
+  { label: "Trilogy", href: "/q=trilogy" },
+  { label: "Ethereal", href: "/q=ethereal" },
+  { label: "Bridal Set", href: "/q=bridal-set" },
+  { label: "Plain", href: "/q=plain" },
+  { label: "Diamond", href: "/q=diamond" }
+]
+
         },
         // {
         //   id: "stone",
@@ -30,8 +37,22 @@ export const NAV_LINKS: NavItem[] = [
         //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
         //   ]
         // },
-   
-        { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Princess", href: "/q=pri" }, { label: "Emerald", href: "/q=eme" }, { label: "Pear", href: "/q=pea" }, { label: "Oval", href: "/q=ova" }] },
+
+        {
+          id: "shape",
+          title: "SHAPE",
+          items: [
+            { label: "Round", href: "/q=rou" },
+            { label: "Princess", href: "/q=pri" },
+            { label: "Emerald", href: "/q=eme" },
+            { label: "Pear", href: "/q=pea" },
+            { label: "Oval", href: "/q=ova" },
+            { label: "Cushion", href: "/q=cus" },
+            { label: "Radiant", href: "/q=rad" },
+            { label: "Marquise", href: "/q=mar" },
+            { label: "Trilliant", href: "/q=tri" }
+          ]
+        },
         {
           id: "metal",
           title: "METAL",
@@ -73,13 +94,15 @@ export const NAV_LINKS: NavItem[] = [
           id: "style",
           title: "STYLE",
           items: [
-            { label: "Solitaire", href: "/q=solitaire" },
-            { label: "Side Stone", href: "/q=side-stone" },
-            { label: "Toi Et Moi", href: "/q=toi-et-moi" },
-            { label: "3 Stone", href: "/q=3-stone" },
-            { label: "5 Stone", href: "/q=5-stone" },
-            { label: "7 Stone", href: "/q=7-stone" },
-            { label: "Eternity", href: "/q=eternity" },
+            { label: "Stud", href: "/q=stud" },
+            { label: "Halo", href: "/q=halo" },
+            { label: "Hoop", href: "/q=hoop" },
+            { label: "Cluster", href: "/q=cluster" },
+            { label: "Designer", href: "/q=designer" },
+            { label: "Drop", href: "/q=drop" },
+            { label: "Everyday", href: "/q=everyday" },
+            { label: "Men's", href: "/q=mens" },
+            { label: "Gemstone", href: "/q=gemstone" },
           ]
         },
         // {
@@ -90,7 +113,21 @@ export const NAV_LINKS: NavItem[] = [
         //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
         //   ]
         // },
-        { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Princess", href: "/q=pri" }, { label: "Emerald", href: "/q=eme" }, { label: "Pear", href: "/q=pea" }, { label: "Oval", href: "/q=ova" }] },
+        {
+          id: "shape",
+          title: "SHAPE",
+          items: [
+            { label: "Round", href: "/q=rou" },
+            { label: "Princess", href: "/q=pri" },
+            { label: "Emerald", href: "/q=eme" },
+            { label: "Pear", href: "/q=pea" },
+            { label: "Oval", href: "/q=ova" },
+            { label: "Cushion", href: "/q=cus" },
+            { label: "Radiant", href: "/q=rad" },
+            { label: "Marquise", href: "/q=mar" },
+            { label: "Trilliant", href: "/q=tri" }
+          ]
+        },
         {
           id: "metal",
           title: "METAL",
@@ -133,13 +170,17 @@ export const NAV_LINKS: NavItem[] = [
           title: "STYLE",
           items: [
             { label: "Solitaire", href: "/q=solitaire" },
-            { label: "Side Stone", href: "/q=side-stone" },
-            { label: "Toi Et Moi", href: "/q=toi-et-moi" },
-            { label: "3 Stone", href: "/q=3-stone" },
-            { label: "5 Stone", href: "/q=5-stone" },
-            { label: "7 Stone", href: "/q=7-stone" },
-            { label: "Eternity", href: "/q=eternity" },
+            { label: "Halo", href: "/q=halo" },
+            { label: "Cluster", href: "/q=cluster" },
+            { label: "Tennis", href: "/q=tennis" },
+            { label: "Chain", href: "/q=chain" },
+            { label: "Designer", href: "/q=designer" },
+            { label: "Heart", href: "/q=heart" },
+            { label: "Everyday", href: "/q=everyday" },
+            { label: "Journey", href: "/q=journey" },
+            { label: "Gemstone", href: "/q=gemstone" }
           ]
+
         },
 
         // {
@@ -150,7 +191,21 @@ export const NAV_LINKS: NavItem[] = [
         //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
         //   ]
         // },
-        { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Pear", href: "/q=pea" }, { label: "Emerald", href: "/q=eme" }, { label: "Heart", href: "/q=hea" }] },
+        {
+          id: "shape",
+          title: "SHAPE",
+          items: [
+            { label: "Round", href: "/q=rou" },
+            { label: "Princess", href: "/q=pri" },
+            { label: "Emerald", href: "/q=eme" },
+            { label: "Pear", href: "/q=pea" },
+            { label: "Oval", href: "/q=ova" },
+            { label: "Cushion", href: "/q=cus" },
+            { label: "Radiant", href: "/q=rad" },
+            { label: "Marquise", href: "/q=mar" },
+            { label: "Trilliant", href: "/q=tri" }
+          ]
+        },
 
         {
           id: "metal",
@@ -193,14 +248,16 @@ export const NAV_LINKS: NavItem[] = [
           id: "style",
           title: "STYLE",
           items: [
-            { label: "Solitaire", href: "/q=solitaire" },
-            { label: "Side Stone", href: "/q=side-stone" },
-            { label: "Toi Et Moi", href: "/q=toi-et-moi" },
-            { label: "3 Stone", href: "/q=3-stone" },
-            { label: "5 Stone", href: "/q=5-stone" },
-            { label: "7 Stone", href: "/q=7-stone" },
-            { label: "Eternity", href: "/q=eternity" },
+            { label: "Tennis", href: "/q=tennis" },
+            { label: "Chain", href: "/q=chain" },
+            { label: "Friendship", href: "/q=friendship" },
+            { label: "Everyday", href: "/q=everyday" },
+            { label: "Evening", href: "/q=evening" },
+            { label: "Bangles", href: "/q=bangles" },
+            { label: "Gemstone", href: "/q=gemstone" },
+            { label: "Men's", href: "/q=mens" }
           ]
+
         },
 
         // {
@@ -211,7 +268,21 @@ export const NAV_LINKS: NavItem[] = [
         //     { label: "Diamond with Coloured Gemstone", href: "/q=coloured-gemstone" },
         //   ]
         // },
-        { id: "shape", title: "SHAPE", items: [{ label: "Round", href: "/q=rou" }, { label: "Princess", href: "/q=pri" }, { label: "Oval", href: "/q=ova" }, { label: "Emerald", href: "/q=eme" }] },
+        {
+          id: "shape",
+          title: "SHAPE",
+          items: [
+            { label: "Round", href: "/q=rou" },
+            { label: "Princess", href: "/q=pri" },
+            { label: "Emerald", href: "/q=eme" },
+            { label: "Pear", href: "/q=pea" },
+            { label: "Oval", href: "/q=ova" },
+            { label: "Cushion", href: "/q=cus" },
+            { label: "Radiant", href: "/q=rad" },
+            { label: "Marquise", href: "/q=mar" },
+            { label: "Trilliant", href: "/q=tri" }
+          ]
+        },
         {
           id: "metal",
           title: "METAL",
