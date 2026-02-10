@@ -17,7 +17,34 @@ import {
 import { cn } from "@/lib/utils";
 import { FormField, FormItem, FormLabel, FormMessage, FormControl } from "../ui/form";
 
-const styles = ["Solitaire", "Side-Stone", "3-Stone", "5-stone", "7-stone", "Eternity", "Anniversary"];
+const styles = [
+  "Solitaire",
+  "Side Stone",
+  "Toi Et Moi",
+  "Halo",
+  "Hidden Halo",
+  "3 Stone",
+  "5 Stone",
+  "7 Stone",
+  "Eternity",
+  "Half Eternity",
+  "Anniversary",
+  "Trilogy",
+  "Vintage",
+  "Modern",
+  "Minimal",
+  "Statement",
+  "Bridal Set",
+  "Engagement",
+  "Wedding Band",
+  "Plain Band",
+  "Diamond Band",
+  "Gemstone",
+  "Men's",
+  "Couple Band",
+  "Adjustable"
+];
+
 
 export default function StyleDD({ control }: { control: any }) {
   return (

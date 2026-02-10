@@ -237,7 +237,7 @@ useEffect(() => {
                 </FormItem>
               )}
             />
-
+            
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <DesignTypeDD control={form.control} />
               <StyleDD control={form.control} />
