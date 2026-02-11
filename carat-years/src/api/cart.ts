@@ -1,4 +1,5 @@
 import axiosInstance from "@/lib/axiosInstance";
+import useUserStore from "@/store/userStore";
 
 export type IAddToCart = {
   productId: string;
@@ -27,9 +28,34 @@ export const addToCart = async (formData: IAddToCart) => {
   return res.data;
 };
 
-export const getCart = async () => {
-  const res = await axiosInstance.get("/cart");
-  return res.data;
+// Pass token as an argument
+export const getCart = async (token?: string | null) => {
+  if (token) {
+    // Logged in user: Use GET
+    const res = await axiosInstance.get("/cart");
+    return res.data;
+  } else {
+    // Guest user: Use POST with localStorage items
+    const localCartRaw = localStorage.getItem("localCart");
+    let localItems = [];
+    
+    try {
+      localItems = localCartRaw ? JSON.parse(localCartRaw) : [];
+    } catch (e) {
+      localItems = [];
+    }
+
+    if (localItems.length === 0) {
+      return {
+        success: true,
+        data: { items: [], subtotal: 0, finalTotal: 0 },
+      };
+    }
+
+    // Backend handles this POST via resolveUser middleware
+    const res = await axiosInstance.post("/cart", { items: localItems });
+    return res.data;
+  }
 };
 
 export const removeFromCart = async (item: ICartItemIdentifier) => {
@@ -57,5 +83,10 @@ export const applyDiscount = async (code: string) => {
 
 export const removeDiscount = async () => {
   const res = await axiosInstance.delete("/cart/discount");
+  return res.data;
+};
+
+export const syncCartApi = async (localItems: any[]) => {
+  const res = await axiosInstance.post("/cart/sync", { localItems });
   return res.data;
 };

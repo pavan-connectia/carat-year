@@ -24,19 +24,35 @@ import type {
 } from "@/types/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { useSyncCart } from "./useCart";
 import { toast } from "sonner";
 
 export const useLogin = () => {
   const navigate = useNavigate();
   const { login } = useUserStore();
+  const syncCartMutation = useSyncCart();
 
   return useMutation({
     mutationFn: (formData: TLogin) => loginUser(formData),
     onSuccess: (data) => {
+      const { name, email, mobile, token } = data?.data;
+
+      login({ name, email, mobile, token });
+
       toast.success("Login successful!");
 
-      const { name, email, mobile, token } = data?.data;
-      login({ name, email, mobile, token });
+      const localCartRaw = localStorage.getItem("localCart");
+      if (localCartRaw) {
+        try {
+          const localItems = JSON.parse(localCartRaw);
+          if (localItems.length > 0) {
+            syncCartMutation.mutate(localItems);
+          }
+        } catch (e) {
+          console.error("Error parsing local cart", e);
+        }
+      }
+
       navigate("/");
     },
     onError: (error: any) => {

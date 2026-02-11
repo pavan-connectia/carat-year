@@ -1,38 +1,52 @@
+import { useAddToCart } from "@/hooks/useCart";
+import { toast } from "sonner";
+
 interface StickyBarProps {
     visible: boolean;
     product: any;
     selectedSizeObj: any;
-    onAddToCart: () => void;
-    token: string | null;
-    navigate: any;
     isCalculating?: boolean;
     selectedShape: any;
     selectedMetal: any;
     selectedCarat: any;
     selectedColor: any;
+    selectedSize: any
 }
 
 export default function StickyProductBar({
     visible,
     product,
     selectedSizeObj,
-    onAddToCart,
-    token,
-    navigate,
     isCalculating,
     selectedShape,
     selectedMetal,
     selectedCarat,
-    selectedColor
+    selectedColor,
+    selectedSize,
 }: StickyBarProps) {
     if (!selectedSizeObj) return null;
+     const { mutate: addCartMutate } = useAddToCart();
 
     const handleAddToCartClick = () => {
-        if (!token) {
-            navigate("/signup");
-            return;
-        }
-        onAddToCart();
+         const sizeRequired = product?.title === "Ring" || product?.title === "Bracelet";
+
+    if (!selectedMetal || !selectedColor || !selectedShape || !selectedCarat || (sizeRequired && !selectedSize)) {
+      toast.error("Please select all options");
+      return;
+    }
+
+    addCartMutate({
+      productId: product?._id,
+      metal: selectedMetal,
+      color: selectedColor,
+      designType: product?.designType,
+      style: product?.style,
+      stone: product?.stone,
+      shape: selectedShape,
+      carat: selectedCarat,
+      size: sizeRequired ? selectedSize : "N/A",
+      quantity: 1,
+    });
     };
 
     const settingPrice = (selectedSizeObj.goldValue || 0) + (selectedSizeObj.labourValue || 0);
@@ -53,10 +67,8 @@ export default function StickyProductBar({
                 </div>
             )}
 
-            {/* Mobile Layout (sm and below) */}
             <div className="block sm:hidden px-3 py-2">
                 <div className="flex items-center justify-between">
-                    {/* Mobile: Product info and price */}
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                             <h3 className="text-xs font-bold text-gray-900 truncate max-w-[120px]">
@@ -78,7 +90,6 @@ export default function StickyProductBar({
                         </div>
                     </div>
 
-                    {/* Mobile: Add to Cart button only */}
                     <button
                         onClick={handleAddToCartClick}
                         className="bg-[#96722c] text-white px-4 py-2 rounded-sm text-xs font-bold hover:bg-[#7a5c24] transition-all uppercase tracking-wider whitespace-nowrap"
@@ -88,12 +99,9 @@ export default function StickyProductBar({
                 </div>
             </div>
 
-            {/* Desktop Layout (sm and above) */}
             <div className="hidden sm:block container mx-auto px-4 py-3">
                 <div className="flex items-center justify-between gap-4 lg:gap-6">
-                    {/* LEFT: The Pricing Equation */}
                     <div className="flex items-center gap-4 lg:gap-6">
-                        {/* Setting Info */}
                         <div className="flex flex-col items-center text-center">
                             <span className="text-gray-700 text-sm lg:text-base">₹{settingPrice.toLocaleString()}</span>
                             <span className="font-bold text-gray-900 text-sm lg:text-base">Setting</span>
@@ -104,7 +112,6 @@ export default function StickyProductBar({
 
                         <span className="text-xl text-gray-400 font-light">+</span>
 
-                        {/* Diamond Info */}
                         <div className="flex flex-col items-center text-center">
                             <span className="text-gray-700 text-sm lg:text-base">₹{selectedSizeObj.diamondValue?.toLocaleString()}</span>
                             <span className="font-bold text-gray-900 text-sm lg:text-base">Diamond</span>
@@ -116,7 +123,6 @@ export default function StickyProductBar({
                         <span className="text-xl text-gray-400 font-light">=</span>
                     </div>
 
-                    {/* CENTER: Sale Price Info */}
                     <div className="flex items-center gap-4 flex-1 justify-center">
                         <div className="flex flex-col items-center lg:items-start">
                             <h2 className="text-[#96722c] text-base lg:text-lg italic font-bold">
@@ -139,9 +145,7 @@ export default function StickyProductBar({
                         </div>
                     </div>
 
-                    {/* RIGHT: Action Buttons (hidden on sm, visible on md and above) */}
                     <div className="hidden md:flex items-center gap-3 lg:gap-4">
-                        {/* WhatsApp Button */}
                         <a
                             href={whatsappUrl}
                             target="_blank"
@@ -158,7 +162,6 @@ export default function StickyProductBar({
                             <span className="text-xs lg:text-sm whitespace-nowrap">Chat with us</span>
                         </a>
 
-                        {/* Add to Cart Button */}
                         <button
                             onClick={handleAddToCartClick}
                             className="bg-[#96722c] text-white px-6 lg:px-8 py-2 lg:py-3 rounded-sm text-xs lg:text-sm font-bold hover:bg-[#7a5c24] transition-all uppercase tracking-wider whitespace-nowrap"

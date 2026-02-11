@@ -28,7 +28,6 @@ const suggestions = [
   { href: "/product?q=engagement-rings", title: "Engagement Rings" },
   { href: "/product?q=wedding-rings", title: "Wedding Rings" },
   { href: "/product?q=diamond-earrings", title: "Diamond Earrings" },
-  { href: "/product?q=gemstone", title: "Gemstone" },
 ];
 
 export default function SearchDialog({

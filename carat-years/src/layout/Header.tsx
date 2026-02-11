@@ -218,10 +218,10 @@ export default function Header() {
                       <img src={UserIcon} alt="search" className="size-5" />
                     </Link>
 
-                    <Link to={token ? "/checkout" : "/signup"} className="relative">
+                    <Link to={ "/checkout" } className="relative">
                       <img src={BagIcon} alt="store" className="size-5" />
 
-                      {token && totalCartItems > 0 && (
+                      { totalCartItems > 0 && (
                         <span className="absolute -top-3 -right-2 size-4 rounded-full bg-white text-center text-sm font-semibold text-black">
                           {totalCartItems}
                         </span>

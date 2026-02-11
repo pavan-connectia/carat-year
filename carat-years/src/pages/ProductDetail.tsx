@@ -10,7 +10,7 @@ import FloatingWhatsapp from "@/components/shared/FloatingWhtasapp";
 import { useAddToCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 import useUserStore from "@/store/userStore";
-import StickyProductBar from "@/components/product/StickyProductBar"; // This should be imported, not defined here
+import StickyProductBar from "@/components/product/StickyProductBar"; 
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -217,14 +217,12 @@ export default function ProductDetail() {
         visible={showSticky}
         product={product}
         selectedSizeObj={selectedSizeObj}
-        onAddToCart={handleAddToCart}
-        token={token ?? null}
-        navigate={navigate}
         isCalculating={isCalculating}
         selectedShape={selectedShape}
         selectedMetal={selectedMetal}
         selectedCarat={selectedCarat}
         selectedColor={selectedColor}
+        selectedSize={selectedSize}
       />
 
       <ProductInfo

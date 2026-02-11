@@ -11,12 +11,10 @@ export default function ProductPriceBreakup({
 }: any) {
   const [show, setShow] = useState(false);
 
-  console.log({ selectedCaratObj, selectedSizeObj });
-
   return (
     <div className="rounded-lg bg-[#F8F2E7] p-4">
       <button
-        className="mb-4 flex w-full items-center justify-between text-lg font-semibold"
+        className="flex w-full items-center justify-between text-lg font-semibold"
         onClick={() => setShow(!show)}
       >
         <span>Price Breakup</span>
@@ -24,110 +22,110 @@ export default function ProductPriceBreakup({
       </button>
 
       <div
-        className={`overflow-hidden transition-all duration-500 ${show ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
-          }`}
+        className={`overflow-hidden transition-all duration-500 ${
+          show ? "mt-4 max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+        }`}
       >
-        <table className="w-full text-left text-sm">
-          <thead className="text-[#957127]">
+        <table className="w-full text-left text-sm border-collapse">
+          <thead className="text-[#957127] border-b border-amber-200">
             <tr>
-              <th className="px-4 py-2">Component</th>
-              <th className="px-4 py-2">Rate</th>
-              <th className="px-4 py-2">Qty/Wt</th>
-              <th className="px-4 py-2">Final Value</th>
+              <th className="py-2 text-left">Component</th>
+              <th className="py-2 text-right">Rate</th>
+              <th className="py-2 text-right">Weight</th>
+              <th className="py-2 text-right">Final Value</th>
             </tr>
           </thead>
 
-          <tbody>
-            {/* Gold */}
+          <tbody className="divide-y divide-amber-100/50">
+            {/* Gold Row */}
             <tr>
-              <td className="px-4 py-2 font-semibold">
+              <td className="py-3 font-medium">
                 {selectedMetal} {selectedColor}
               </td>
-              <td className="px-4 py-2">
-                ₹{selectedSizeObj?.goldRate} / gram
+              <td className="py-3 text-right">
+                ₹{selectedSizeObj?.goldRate?.toLocaleString()} / g
               </td>
-              <td className="px-4 py-2">
-                {selectedSizeObj?.goldWeight}g
+              <td className="py-3 text-right">
+                {selectedSizeObj?.goldWeight} g
               </td>
-              <td className="px-4 py-2 font-semibold">
+              <td className="py-3 text-right font-semibold">
                 ₹{selectedSizeObj?.goldValue?.toLocaleString()}
               </td>
             </tr>
 
-            {/* Diamonds */}
-            {selectedCaratObj?.diamondCategory?.map(
-              (cat: string, index: number) => {
-                const catNum = parseInt(cat.replace("d", ""));
-                const isDynamic = catNum >= 6 && catNum <= 10;
+            {/* Diamonds Rows */}
+            {selectedCaratObj?.diamondCategory?.map((cat: string, index: number) => {
+              const catNum = parseInt(cat.replace("d", ""));
+              const isDynamic = catNum >= 6 && catNum <= 10;
 
-                return (
-                  <tr key={index}>
-                    <td className="px-4 py-2 font-semibold">
-                      Diamond ({cat})
-                    </td>
-                    <td className="px-4 py-2">
-                      ₹{selectedCaratObj?.diamondRate?.[index]?.toLocaleString()} / gram
-                    </td>
-                    <td className="px-4 py-2">
-                      {isDynamic
-                        ? selectedCarat
-                        : selectedCaratObj?.diamondWeight?.[index]}{" "}
-                      {isDynamic ? "ct" : "g"}
-                    </td>
-                    <td className="px-4 py-2 font-semibold">
-                      ₹{calculatedDiamondBreakdown?.[index]?.toLocaleString()}
-                    </td>
-                  </tr>
-                );
-              }
-            )}
+              return (
+                <tr key={index}>
+                  <td className="py-3 font-medium">Diamond ({cat})</td>
+                  <td className="py-3 text-right">
+                    ₹{selectedCaratObj?.diamondRate?.[index]?.toLocaleString()} / ct
+                  </td>
+                  <td className="py-3 text-right">
+                    {isDynamic ? selectedCarat : selectedCaratObj?.diamondWeight?.[index]} ct
+                  </td>
+                  <td className="py-3 text-right font-semibold">
+                    ₹{calculatedDiamondBreakdown?.[index]?.toLocaleString()}
+                  </td>
+                </tr>
+              );
+            })}
 
-            {/* Making Charges */}
+            {/* Making Charges Row */}
             <tr>
-              <td className="px-4 py-2 font-semibold">
-                Making Charges
+              <td className="py-3 font-medium">Making Charges</td>
+              <td className="py-3 text-right">
+                ₹{selectedCaratObj?.labourRate?.toLocaleString()} / g
               </td>
-              <td className="px-4 py-2">
-                {selectedCaratObj?.labourRate} / gram
-              </td>
-              <td className="px-4 py-2">
+              <td className="py-3 text-right">
                 {selectedSizeObj?.goldWeight ?? "-"} g
               </td>
-              <td className="px-4 py-2 font-semibold">
+              <td className="py-3 text-right font-semibold">
                 ₹{selectedCaratObj?.labourAmt?.toLocaleString() ?? "-"}
               </td>
             </tr>
 
-            {/* Gross Amount */}
-            <tr>
-              <td className="px-4 py-2 font-semibold">
-                Gross Amount
-              </td>
-              <td className="px-4 py-2">-</td>
-              <td className="px-4 py-2">-</td>
-              <td className="px-4 py-2 font-semibold">
+            {/* Gross Amount Row */}
+            <tr className="bg-amber-50/30">
+              <td className="py-3 font-bold">Gross Amount</td>
+              <td className="py-3 text-right text-gray-400"></td>
+              <td className="py-3 text-right text-gray-400"></td>
+              <td className="py-3 text-right font-bold">
                 ₹{selectedSizeObj?.grossValue?.toLocaleString() ?? "-"}
               </td>
             </tr>
 
-            {/* Discount */}
+            {/* Discount Row */}
             <tr>
-              <td className="px-4 py-2 font-semibold">
-                Discount Amount
-              </td>
-              <td>-</td>
-              <td>-</td>
-              <td className="px-4 py-2 font-semibold text-green-700">
-                ₹{selectedSizeObj?.discountValue?.toLocaleString() ?? "-"}
+              <td className="py-3 font-medium text-green-700">Discount</td>
+              <td className="py-3 text-right text-gray-400"></td>
+              <td className="py-3 text-right text-gray-400"></td>
+              <td className="py-3 text-right font-semibold text-green-700">
+                {selectedSizeObj?.discountValue > 0 
+                  ? `- (₹${selectedSizeObj?.discountValue?.toLocaleString()})` 
+                  : "₹0"}
               </td>
             </tr>
 
-            {/* Total */}
-            <tr className="border-t border-amber-200">
-              <td className="px-4 py-2 font-bold">Total Net (Incl. Tax)</td>
-              <td></td>
-              <td></td>
-              <td className="px-4 py-2 font-bold">
+            {/* GST Row */}
+            <tr>
+              <td className="py-3 font-medium">GST (3%)</td>
+              <td className="py-3 text-right text-gray-400"></td>
+              <td className="py-3 text-right text-gray-400"></td>
+              <td className="py-3 text-right font-semibold">
+                {/* ₹{selectedSizeObj?.taxValue?.toLocaleString() ?? "-"} */}
+              </td>
+            </tr>
+
+            {/* Total Row */}
+            <tr className="border-t-2 border-amber-300 bg-amber-100/20">
+              <td className="py-4 font-bold text-base">Total Net Value</td>
+              <td className="py-4 text-right text-gray-400"></td>
+              <td className="py-4 text-right text-gray-400"></td>
+              <td className="py-4 text-right font-bold text-base">
                 ₹{selectedSizeObj?.totalValue?.toLocaleString()}
               </td>
             </tr>

@@ -107,6 +107,7 @@ export default function App() {
           <Route path="care-plan" element={<CarePlan />} />
           <Route path="gift" element={<Gift />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="checkout" element={<Checkout />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="account" element={<AccountLayout />}>
@@ -120,7 +121,7 @@ export default function App() {
               <Route path="logout" element={<Logout />} />
               <Route path="delete" element={<DeleteAccount />} />
             </Route>
-            <Route path="checkout" element={<Checkout />} />
+            
           </Route>
 
           <Route path="blog" element={<Blog />} />

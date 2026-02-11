@@ -10,16 +10,17 @@ import {
   type ICartItemIdentifier,
   removeDiscount,
   applyDiscount,
+  syncCartApi,
 } from "@/api/cart";
 import useUserStore from "@/store/userStore";
 
 export const useCart = () => {
   const { token } = useUserStore();
+
   return useQuery({
-    queryKey: ["cart"],
-    queryFn: getCart,
+    queryKey: ["cart", token], 
+    queryFn: () => getCart(token),
     staleTime: 1000 * 60 * 2,
-    enabled: !!token,
   });
 };
 
@@ -30,8 +31,37 @@ export const useAddToCart = () => {
     mutationFn: (formData: IAddToCart) => {
       return addToCart(formData);
     },
-    onSuccess: () => {
-      toast.success("Item added to cart");
+    onSuccess: (response: any) => {
+      if (response?.data?.guestItem) {
+        const newItem = response.data.guestItem;
+
+        const existingCartRaw = localStorage.getItem("localCart");
+        let localCart = existingCartRaw ? JSON.parse(existingCartRaw) : [];
+
+        const existingItemIndex = localCart.findIndex((item: any) => {
+          return (
+            item.product === newItem.product &&
+            item.metal.toLowerCase() === newItem.metal.toLowerCase() &&
+            item.color.toLowerCase() === newItem.color.toLowerCase() &&
+            item.shape.toLowerCase() === newItem.shape.toLowerCase() &&
+            parseFloat(item.carat).toFixed(3) === parseFloat(newItem.carat).toFixed(3) &&
+            (newItem.size ? item.size === newItem.size : true)
+          );
+        });
+
+        if (existingItemIndex > -1) {
+          localCart[existingItemIndex].quantity += newItem.quantity;
+          localCart[existingItemIndex].price = newItem.price;
+        } else {
+          localCart.push(newItem);
+        }
+
+        localStorage.setItem("localCart", JSON.stringify(localCart));
+        toast.success("Item added to local cart");
+      } else {
+        toast.success("Item added to cart");
+      }
+
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error: any) => {
@@ -129,6 +159,25 @@ export const useRemoveDiscount = () => {
     onError: (error: any) => {
       toast.error("Failed to remove coupon");
       console.error(error);
+    },
+  });
+};
+
+export const useSyncCart = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: syncCartApi,
+    onSuccess: () => {
+
+      localStorage.removeItem("localCart");
+      
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      
+      console.log("Guest cart synced to user account successfully.");
+    },
+    onError: (error: any) => {
+      console.error("Failed to sync cart:", error?.response?.data?.message);
     },
   });
 };

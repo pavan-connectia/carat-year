@@ -280,7 +280,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
 
 
         {/* OCCASION */}
-        <FilterHeader title="occsasion" sectionId="occsasion" />
+        <FilterHeader title="Occsasion" sectionId="occsasion" />
         {sections.occsasion && (
           <FilterOptions
             options={["Everyday", "Office Wear", "Casual", "Party", "Engagement", "Wedding", "Luxury Collection"]}
@@ -291,7 +291,7 @@ export function Sidebar({ onChange, isMobile = false, onClose }: SidebarProps) {
         )}
 
         {/* SHAPE */}
-        <FilterHeader title="Shape" sectionId="shape" />
+        <FilterHeader title="Diamond Shape" sectionId="shape" />
         {sections.shape && (
           <FilterOptions
             options={["Round", "Oval", "Princess", "Cushion", "Emerald", "Marquise", "Heart", "Pear", "Radiant"]}

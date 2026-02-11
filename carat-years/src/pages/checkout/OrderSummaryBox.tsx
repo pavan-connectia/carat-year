@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
 interface Props {
   items: number;
   price: number;
@@ -14,37 +17,56 @@ export default function OrderSummaryBox({
   onContinue,
 }: Props) {
   return (
-    <div className="w-full rounded-md border bg-[#fff7f2] p-4 shadow-sm lg:w-72">
-      <h3 className="mb-3 text-lg font-semibold">Order Summary</h3>
-      <div className="space-y-1 text-sm">
-        <p className="flex justify-between">
-          <span>Total Items</span> <span>{items} Items</span>
-        </p>
-        <p className="flex justify-between">
-          <span>Price</span> <span>₹ {price.toLocaleString()}</span>
-        </p>
-        <p className="flex justify-between">
-          <span>Discount</span> <span>₹ {discount?.toLocaleString()}</span>
-        </p>
-        {/* <p className="flex justify-between">
-          <span>GST</span> <span>₹ {gst.toLocaleString()}</span>
-        </p>
-        <p className="flex justify-between">
-          <span>Shipping Charges</span>{" "}
-          <span>₹ {shipping.toLocaleString()}</span>
-        </p> */}
+    <div className="w-full rounded-xl border border-gray-100 bg-[#FCF9F7] p-6 shadow-sm">
+      <h3 className="text-xl font-serif font-bold text-gray-900 mb-6">Order Summary</h3>
+      
+      <div className="space-y-4">
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>Bag Subtotal ({items} items)</span>
+          <span className="font-medium">₹{price.toLocaleString("en-IN")}</span>
+        </div>
+        
+        {discount > 0 && (
+          <div className="flex justify-between text-sm text-green-600">
+            <span>Coupon Discount</span>
+            <span className="font-medium">- ₹{discount.toLocaleString("en-IN")}</span>
+          </div>
+        )}
+
+        <div className="flex justify-between text-sm text-gray-600">
+          <span>Shipping & Taxes</span>
+          <span className="text-xs uppercase font-bold text-green-600">Free</span>
+        </div>
+
+        <Separator className="bg-gray-200/60" />
+
+        <div className="flex justify-between items-end pt-2">
+          <span className="text-base font-bold text-gray-900">Total Amount</span>
+          <div className="text-right">
+            <span className="block text-2xl font-bold text-[#351043]">
+              ₹{total.toLocaleString("en-IN")}
+            </span>
+            <span className="text-[10px] text-gray-400 uppercase tracking-tighter">Inclusive of all taxes</span>
+          </div>
+        </div>
       </div>
-      <hr className="my-3" />
-      <p className="flex justify-between text-lg font-semibold">
-        <span>TOTAL</span> <span>₹ {total.toLocaleString()}</span>
-      </p>
-      <button
+
+      <Button
         onClick={onContinue}
-        className="mt-4 w-full rounded-md bg-purple-900 py-2 font-medium text-white transition hover:bg-purple-800"
+        className="mt-8 w-full rounded-lg bg-[#351043] py-7 text-lg font-bold text-white shadow-xl shadow-purple-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
       >
-        Continue
-      </button>
-      <p className="text-xs p-2">Lifetime Exchange & Buy-Back available. No returns.</p>
+        Proceed to Checkout
+      </Button>
+
+      <div className="mt-6 space-y-3">
+        <div className="flex items-center gap-3 text-[11px] text-gray-500 font-medium bg-white/50 p-2 rounded-md border border-gray-100">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#351043]" />
+            LIFETIME EXCHANGE & BUY-BACK
+        </div>
+        <p className="text-[10px] text-center text-gray-400">
+          By continuing, you agree to our Terms of Service.
+        </p>
+      </div>
     </div>
   );
 }

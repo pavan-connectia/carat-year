@@ -6,14 +6,14 @@ import { Link } from "react-router";
 import { useAddToWishlist } from "@/hooks/useWishlist";
 // import { useAddToCart } from "@/hooks/useCart";
 // import { toast } from "sonner";
-// import useUserStore from "@/store/userStore";
+import useUserStore from "@/store/userStore";
 
 type ProductCardProps = {
   product: any;
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
-  // const { token } = useUserStore();
+  const { token } = useUserStore();
   const { mutate } = useAddToWishlist();
   // const { mutate: addCartMutate } = useAddToCart();
   const [selectedVariationIndex, setSelectedVariationIndex] = useState(() => {
@@ -92,7 +92,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="group absolute top-3 right-3 z-10 cursor-pointer p-2">
           <Heart className="h-5 w-5 fill-[#8B7D63] stroke-[#8B7D63] transition" />
         </div>
-      ) : (
+      ) : token ? (
         <button
           type="button"
           title="Add to Wishlist"
@@ -118,7 +118,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         >
           <Heart className="h-5 w-5 stroke-[#8B7D63] transition hover:fill-[#8B7D63]" />
         </button>
-      )}
+      ) : null}
+
 
       {/* Product Image */}
       <Link to={`/product/${product?.category?.slug}/${product?.slug}`}>

@@ -19,7 +19,6 @@ interface ProductInfoProps {
   selectedMetal: any;
   selectedCarat: any;
   selectedSize: any;
-  // ADDED THIS PROP
   selectedSizeObj: any;
   setSelectedMetal: (value: any) => void;
   setSelectedColor: (value: any) => void;
@@ -40,7 +39,7 @@ export default function ProductInfo({
   selectedMetal,
   selectedCarat,
   selectedSize,
-  selectedSizeObj, // Receive the dynamic calculation
+  selectedSizeObj,
   setSelectedMetal,
   setSelectedColor,
   setSelectedShape,
@@ -101,14 +100,12 @@ export default function ProductInfo({
     });
   };
 
-  console.log(selectedCarat);
-
-  const phone = "919870197167";
+  // const phone = "919870197167";
   const websiteUrl = typeof window !== "undefined" ? window.location.href : "";
-  const text = `Hi, I need more information about ${product?.title} (Code: ${product?.productCode}). I would like to book an appointment.`;
+  // const text = `Hi, I need more information about ${product?.title} (Code: ${product?.productCode}). I would like to book an appointment.`;
 
-  const message = `${text}\n\nWebsite: ${websiteUrl}`;
-  const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  // const message = `${text}\n\nWebsite: ${websiteUrl}`;
+  // const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
 
 
@@ -239,53 +236,54 @@ export default function ProductInfo({
                 >
                   <Share2 className="h-4 w-4 text-957127" />
                 </Button>
+                {token && (
+                  <button
+                    type="button"
+                    title={product?.isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                    onClick={() => {
+                      if (product?.isWishlisted) {
+                        // Handle remove from wishlist
+                        return;
+                      }
 
-                <button
-                  type="button"
-                  title={product?.isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
-                  onClick={() => {
-                    if (product?.isWishlisted) {
-                      // Handle remove from wishlist
-                      return;
-                    }
+                      const wishlistPayload = {
+                        image: selectedShape?.images?.[0] || "/placeholder.png",
+                        title: product?.title || "Untitled Product",
+                        slug: product?.slug,
+                        category: product?.category?._id,
+                        metal: selectedVariation?.metal,
+                        color: selectedVariation?.color,
+                        designType: selectedVariation?.designType,
+                        style: selectedVariation?.style,
+                        stone: selectedVariation?.stone,
+                        shape: selectedShape?.shape,
+                        carat: selectedCarat,
+                        size: selectedSize,
+                      };
 
-                    const wishlistPayload = {
-                      image: selectedShape?.images?.[0] || "/placeholder.png",
-                      title: product?.title || "Untitled Product",
-                      slug: product?.slug,
-                      category: product?.category?._id,
-                      metal: selectedVariation?.metal,
-                      color: selectedVariation?.color,
-                      designType: selectedVariation?.designType,
-                      style: selectedVariation?.style,
-                      stone: selectedVariation?.stone,
-                      shape: selectedShape?.shape,
-                      carat: selectedCarat,
-                      size: selectedSize,
-                    };
-
-                    mutate(wishlistPayload);
-                  }}
-                  className="rounded-full p-2.5 border border-[#957127] bg-white hover:bg-amber-50 transition"
-                >
-                  <Heart
-                    className={`h-5 w-5 transition ${product?.isWishlisted
-                      ? "fill-[#957127] stroke-[#957127]"
-                      : "stroke-[#957127] hover:[#957127]"
-                      }`}
-                  />
-                </button>
+                      mutate(wishlistPayload);
+                    }}
+                    className="rounded-full p-2.5 border border-[#957127] bg-white hover:bg-amber-50 transition"
+                  >
+                    <Heart
+                      className={`h-5 w-5 transition ${product?.isWishlisted
+                        ? "fill-[#957127] stroke-[#957127]"
+                        : "stroke-[#957127] hover:[#957127]"
+                        }`}
+                    />
+                  </button>
+                )}
               </div>
             </div>
           </div>
 
           <Button className="w-full bg-[#351043] py-6 text-lg text-white hover:bg-transparent hover:text-[#351043] border border-[#351043]" onClick={() => { handleAddToCart(); navigate("/checkout"); }}>Buy Now</Button>
-          <Button variant="outline" className="w-full py-6 text-lg border border-[#351043] hover:bg-[#351043] hover:text-white" onClick={() => { if (!token) { navigate("/signup"); return; } handleAddToCart(); }}>
+          <Button variant="outline" className="w-full py-6 text-lg border border-[#351043] hover:bg-[#351043] hover:text-white" onClick={() => { handleAddToCart(); }}>
             <ShoppingCart className="mr-2 " /> Add to Cart
           </Button>
 
 
-          <Button
+          {/* <Button
             asChild
             className="w-full bg-[#351043] py-6 text-lg text-white
              hover:bg-transparent hover:text-[#351043]
@@ -298,7 +296,7 @@ export default function ProductInfo({
             >
               Book an Appointment
             </a>
-          </Button>
+          </Button> */}
 
         </div>
       </div>
