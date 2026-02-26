@@ -9,6 +9,8 @@ const CraftedByLook = () => {
     { src: "/craft/craft4.png", position: "top" },
     { src: "/craft/craft5.png", position: "bottom" },
     { src: "/craft/craft6.png", position: "top" },
+    { src: "/craft/craft3.png", position: "bottom" },
+    
   ];
 
   const topSVGs = [200, 600, 1200];
@@ -29,7 +31,7 @@ const CraftedByLook = () => {
             stroke={`url(#paint0_linear_373_1011_${index})`}
             strokeWidth="2"
           />
-          <defs>
+          {/* <defs>
             <linearGradient
               id={`paint0_linear_373_1011_${index}`}
               x1="19.5"
@@ -41,7 +43,7 @@ const CraftedByLook = () => {
               <stop stopColor="#FFE2A6" stopOpacity="0.2" />
               <stop offset="1" stopColor="#998864" />
             </linearGradient>
-          </defs>
+          </defs> */}
         </svg>
       ))}
 
@@ -51,12 +53,14 @@ const CraftedByLook = () => {
         <div className="hidden w-screen overflow-hidden sm:flex">
           {hangingProducts.map((product, idx) => (
             <div
-              key={idx}
-              className="flex flex-shrink-0 flex-col items-center"
+               className={`shrink-0 flex-col items-center ${
+                idx >= 5 ? "hidden xl:flex" : "flex"
+              } w-[22vw] xl:w-[15.7vw]`}
               style={{
-                width: `${110 / hangingProducts.length}vw`,
                 marginLeft: idx === 0 ? "-5vw" : 0,
-                marginRight: idx === hangingProducts.length - 1 ? "-5vw" : 0,
+                marginRight: 
+                  (idx === 4 && idx < 5) ? "0" :
+                  (idx === hangingProducts.length - 1 ? "-5vw" : 0),
                 marginTop: product.position === "top" ? "-60px" : "80px",
               }}
             >
@@ -71,7 +75,7 @@ const CraftedByLook = () => {
                   stroke="url(#paint0_linear_373_1011)"
                   strokeWidth="2"
                 />
-                <circle cx="40" cy="170" r="7" fill="white" stroke="#957127" />
+                {/* <circle cx="40" cy="170" r="7" fill="white" stroke="#957127" />
                 <circle cx="40" cy="170" r="4.5" fill="#A1906D" />
                 <defs>
                   <linearGradient
@@ -85,13 +89,13 @@ const CraftedByLook = () => {
                     <stop stopColor="#FFE2A6" stopOpacity="0.2" />
                     <stop offset="1" stopColor="#998864" />
                   </linearGradient>
-                </defs>
+                </defs> */}
               </svg>
 
               <img
                 src={product.src}
                 alt={`Hanging product ${idx + 1}`}
-                className="h-60 w-40 rounded-3xl object-cover"
+                className="h-72 w-40 xl:w-48 rounded-3xl object-cover"
               />
             </div>
           ))}
@@ -143,21 +147,21 @@ const CraftedByLook = () => {
           </Button> */}
         </div>
         <div className="absolute bottom-[-39px] left-[-180px] hidden overflow-hidden sm:block md:h-[200px] md:w-[500px]">
-          <img
+          {/* <img
             src="/home/left-image1.png"
             alt="Jewelry Model"
             className="h-full w-full object-cover"
-          />
+          /> */}
         </div>
         <div
           className="absolute right-[-200px] bottom-[-39px] hidden transform overflow-hidden sm:block md:h-[200px] md:w-[500px]"
           style={{ transform: "rotate(-180deg)" }}
         >
-          <img
+          {/* <img
             src="/home/left-image1.png"
             alt="Jewelry Model"
             className="h-full w-full object-cover"
-          />
+          /> */}
         </div>
       </div>
     </div>

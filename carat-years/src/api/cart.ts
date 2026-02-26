@@ -1,5 +1,4 @@
 import axiosInstance from "@/lib/axiosInstance";
-import useUserStore from "@/store/userStore";
 
 export type IAddToCart = {
   productId: string;
@@ -28,14 +27,11 @@ export const addToCart = async (formData: IAddToCart) => {
   return res.data;
 };
 
-// Pass token as an argument
 export const getCart = async (token?: string | null) => {
   if (token) {
-    // Logged in user: Use GET
     const res = await axiosInstance.get("/cart");
     return res.data;
   } else {
-    // Guest user: Use POST with localStorage items
     const localCartRaw = localStorage.getItem("localCart");
     let localItems = [];
     
@@ -52,7 +48,6 @@ export const getCart = async (token?: string | null) => {
       };
     }
 
-    // Backend handles this POST via resolveUser middleware
     const res = await axiosInstance.post("/cart", { items: localItems });
     return res.data;
   }
