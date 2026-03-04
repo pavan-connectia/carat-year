@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Link } from "react-router";
 
-// Your provided pages list
 const pages = [
   { label: "Rings", href: "/product?q=rings" },
   { label: "Earrings", href: "/product?q=earrings" },

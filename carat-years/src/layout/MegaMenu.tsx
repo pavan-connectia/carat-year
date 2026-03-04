@@ -61,56 +61,49 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
   if (!isVisible) return null;
 
   const generateFilterHref = (
-  columnTitle: string,
-  itemLabel: string,
-  itemHref?: string
-) => {
-  if (itemHref && itemHref.includes("?")) return itemHref;
-
-  const filters = mapMenuToBackendFilters(itemLabel, columnTitle, baseCategory);
-
-  if (!filters.minPrice) filters.minPrice = "0";
-  if (!filters.maxPrice) filters.maxPrice = "500000";
-
-  if (filters.metal) {
-    filters.color = filters.metal;
-    delete filters.metal;
-  }
-
-  const queryString = generateFilterQuery(filters);
-  return `/product?${queryString}`;
-};
-
+    columnTitle: string,
+    itemLabel: string,
+    itemHref?: string
+  ) => {
+    if (itemHref && itemHref.includes("?")) return itemHref;
+    const filters = mapMenuToBackendFilters(itemLabel, columnTitle, baseCategory);
+    if (!filters.minPrice) filters.minPrice = "0";
+    if (!filters.maxPrice) filters.maxPrice = "500000";
+    if (filters.metal) {
+      filters.color = filters.metal;
+      delete filters.metal;
+    }
+    const queryString = generateFilterQuery(filters);
+    return `/product?${queryString}`;
+  };
 
   const generatePromoHref = (promo: MegaMenuPromo): string => {
     if (promo.href) return promo.href;
-    
     const filters: Record<string, string> = {};
     if (baseCategory) {
       filters.tags = baseCategory.toLowerCase().replace(/\s+/g, '-');
     }
-    
     const queryString = generateFilterQuery(filters);
     return `/product${queryString ? `?${queryString}` : ''}`;
   };
-
 
   const isSingleColumn = columns.length === 1 || singleColumnMode;
 
   return (
     <div 
-      className="absolute top-full left-0 w-full bg-white text-gray-800 shadow-2xl border-t border-gray-100 z-9999 transition-opacity duration-300"
+      className="absolute top-full left-0 w-full bg-white text-gray-800 shadow-2xl border-t border-gray-100 z-[9999] transition-opacity duration-300"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="container mx-auto px-6 py-10 flex flex-wrap lg:flex-nowrap">
 
-        {/* Updated grid-cols logic below */}
+      <div className="absolute -top-4 left-0 w-full h-4 bg-transparent" />
+
+      <div className="container mx-auto px-6 py-10 flex flex-wrap lg:flex-nowrap">
         <div className={`flex-1 ${
           isSingleColumn 
             ? 'grid grid-cols-1 gap-8' 
             : layoutType === 'split' 
-              ? 'grid grid-cols-3 gap-12' // Changed from grid-cols-2 to grid-cols-3 to accommodate RECIPIENT, OCCASION, and PRICE in one row
+              ? 'grid grid-cols-3 gap-12' 
               : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8'
         }`}>
           {columns.map((column, idx) => (
@@ -120,7 +113,6 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
               </h2>
               
               {column.groups ? (
-                // ... (Groups logic remains same)
                 <div className="space-y-8">
                   {column.groups.map((group, gIdx) => (
                     <div key={gIdx}>
@@ -132,6 +124,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                           <li key={itemIdx}>
                             <Link 
                               to={generateFilterHref(column.title, item.label, item.href)}
+                              onClick={onMouseLeave} // Closes menu after selection
                               className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
                             >
                               <SubMenuIcon type={group.title} label={item.label} />
@@ -149,6 +142,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                     <li key={itemIdx}>
                       <Link 
                         to={generateFilterHref(column.title, item.label, item.href)}
+                        onClick={onMouseLeave} // Closes menu after selection
                         className="text-[13px] text-gray-600 hover:text-[#B4975A] transition-colors flex items-center gap-2 group whitespace-nowrap"
                       >
                         <SubMenuIcon type={column.title} label={item.label} />
@@ -167,7 +161,12 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
             <h3 className="font-playfair text-xl text-gray-800 mb-6 italic">Popular Categories</h3>
             <div className="grid grid-cols-2 gap-x-6 gap-y-8">
               {promos.map((promo, idx) => (
-                <Link key={idx} to={generatePromoHref(promo)} className="group block">
+                <Link 
+                  key={idx} 
+                  to={generatePromoHref(promo)} 
+                  onClick={onMouseLeave} 
+                  className="group block"
+                >
                   <div className="overflow-hidden rounded-sm mb-3 aspect-4/3 bg-gray-100 border border-gray-50">
                     <img 
                       src={promo.image} 
