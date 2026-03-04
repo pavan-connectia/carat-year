@@ -191,7 +191,7 @@ export default function EngagementRingCalculator() {
             Ready to Find the Perfect Engagement Ring?
           </h2>
           <Link
-            to="/collection/engagement-rings"
+            to="/product?q=rings&occsasion=engagement"
             className="mt-6 rounded-full border border-[#533D0E] bg-[#533D0E] px-8 py-3 text-base font-medium text-white transition hover:bg-transparent hover:text-[#533D0E] sm:px-10 sm:py-4 sm:text-lg"
           >
             Explore Best Selling Engagement Rings

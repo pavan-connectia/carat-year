@@ -240,7 +240,7 @@ export default function LabGrownDiamondGuide() {
         {/* CTA */}
         <section className="mt-10 text-center">
           <Link
-            to="/collection/lab-grown-diamonds"
+            to="/product"
             className="mt-10 rounded-full border border-[#533D0E] bg-[#533D0E] px-8 py-3 text-base font-medium text-white transition hover:bg-transparent hover:text-[#533D0E] sm:px-10 sm:py-4 sm:text-lg"
           >
             Explore Lab Grown Diamond Collection

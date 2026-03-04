@@ -91,7 +91,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
 
   return (
     <div 
-      className="absolute top-full left-0 w-full bg-white text-gray-800 shadow-2xl border-t border-gray-100 z-[9999] transition-opacity duration-300"
+      className="absolute top-full left-0 w-full bg-white text-gray-800 shadow-2xl border-t border-gray-100 z-9999 transition-opacity duration-300"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

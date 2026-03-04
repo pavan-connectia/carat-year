@@ -100,7 +100,7 @@ export default function Footer() {
 
           <div className="order-2 col-span-3 space-y-3 text-center md:col-span-1 lg:order-5 lg:text-left">
             <h3 className="mb-4 text-xs font-medium sm:text-sm">
-              SIGN UP TO THE rewards & promotions
+              SIGN UP TO THE REWARDS & PROMOTIONS
             </h3>
             <p className="mb-4 text-xs sm:text-sm">
               For the chance to win a pair of diamond earrings! Plus early
