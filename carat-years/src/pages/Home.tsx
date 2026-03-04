@@ -9,6 +9,7 @@ import Custom from "@/components/home/Custom";
 import FloatingWhtasapp from "@/components/shared/FloatingWhtasapp";
 import ShopTimeless from "@/components/home/ShopTimeless";
 import ExploreColllection from "@/components/home/ExploreCollection";
+import Testimonial from "@/components/shared/Testimonial";
 
 export default function () {
   return (
@@ -19,7 +20,7 @@ export default function () {
       <CaratPromise />
       <HomeCategories />
       <AboutUs />
-      {/* <Testimonial /> */}
+      <Testimonial />
       <Custom />
       <ExploreColllection />
       <CraftedByLook />

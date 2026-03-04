@@ -23,6 +23,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const helpAndInfo = [
+  { label: "Contact Us", href: "/contact-us" },
   { label: "FAQs", href: "/faqs" },
   { label: "Delivery", href: "/delivery" },
   { label: "Privacy Policy", href: "/privacy-policy" },
@@ -53,19 +54,19 @@ const discoverLinks = [
   { label: "Hallmarking", href: "/hallmarking" },
 ];
 
-const contactLinks = [
-  { label: "Live Chat", href: "#" },
-  { label: "Email Us", href: "mailto:connect@caratyears.in" },
-  { label: "Book An Appointment", href: "/book-appointment" },
-  { label: "Visit Our Stores", href: "/visit-stores" },
-  { label: "Contact Us", href: "/contact-us" },
-];
+// const contactLinks = [
+//   { label: "Live Chat", href: "#" },
+//   { label: "Email Us", href: "mailto:connect@caratyears.in" },
+//   { label: "Book An Appointment", href: "/book-appointment" },
+//   { label: "Visit Our Stores", href: "/visit-stores" },
+//   { label: "Contact Us", href: "/contact-us" },
+// ];
 
 export default function Footer() {
   return (
     <footer className="bg-gradient text-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-6 gap-8 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-6 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Logo and Social */}
           <div className="order-1 col-span-3 md:col-span-1 flex flex-col items-start gap-6">
             <Link to="/">
@@ -92,14 +93,14 @@ export default function Footer() {
           <div className="order-4 col-span-2 md:order-3 md:col-span-1">
             <FooterList title="DISCOVER" items={discoverLinks} />
           </div>
-
+{/* 
           <div className="order-5 col-span-2 md:order-4 md:col-span-1">
             <FooterList title="CONTACT US" items={contactLinks} />
-          </div>
+          </div> */}
 
           <div className="order-2 col-span-3 space-y-3 text-center md:col-span-1 lg:order-5 lg:text-left">
             <h3 className="mb-4 text-xs font-medium sm:text-sm">
-              SIGN UP TO THE NEWSLETTER
+              SIGN UP TO THE rewards & promotions
             </h3>
             <p className="mb-4 text-xs sm:text-sm">
               For the chance to win a pair of diamond earrings! Plus early
