@@ -30,7 +30,7 @@ export default function Img({
     return src; // fallback
   }
 
-  return `${baseUrl}${src}`;
+  return `${baseUrl}/${src}`;
 };
 
 
