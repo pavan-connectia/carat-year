@@ -3,7 +3,7 @@ import { ChevronDown, Plus, Minus } from "lucide-react";
 import Heading from "../ui/Heading";
 import { useFaqs } from "@/hooks/useFaq";
 import type { TFaq } from "@/types/api";
-import { Button } from "@/components/ui/button"; // Assuming you have a button component
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function FAQ() {
@@ -38,7 +38,6 @@ export default function FAQ() {
       <div className="text-center">
         <Heading>Frequently Asked Questions</Heading>
 
-        {/* 2 Column Grid Layout */}
         <div className="font-playfair mt-12 grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
           {faqs.slice(0, visibleCount).map((faq: TFaq, index: number) => (
             <div

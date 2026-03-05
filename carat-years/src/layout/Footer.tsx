@@ -66,7 +66,7 @@ export default function Footer() {
   return (
     <footer className="bg-gradient text-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-6 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-6 justify-between md:grid-cols-2 lg:grid-cols-4">
           {/* Logo and Social */}
           <div className="order-1 col-span-3 md:col-span-1 flex flex-col items-start gap-6">
             <Link to="/">
