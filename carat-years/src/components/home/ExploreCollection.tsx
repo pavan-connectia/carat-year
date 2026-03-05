@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Heading from "../ui/Heading";
-import { useProductsByTag } from "@/hooks/useProducts";
+import { useProductsByTagWithKids } from "@/hooks/useProducts";
 import ProductCard from "../product/ProductCard";
+import { useNavigate } from "react-router";
 
 export default function ExploreCollection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -11,7 +12,8 @@ export default function ExploreCollection() {
     data: productsData,
     isLoading,
     refetch,
-  } = useProductsByTag(selectedCategory);
+  } = useProductsByTagWithKids(selectedCategory);
+  const navigate = useNavigate();
 
   useEffect(() => {
     refetch();
@@ -25,16 +27,15 @@ export default function ExploreCollection() {
         <Heading>Explore Our Kids Collections</Heading>
 
         <div className="my-10 flex flex-wrap justify-center gap-4">
-          {["All", "Gold", "Necklaces", "Earrings", "Rings"].map(
+          {["All", "Bracelets", "Necklaces", "Earrings", "Rings"].map(
             (category) => (
               <div
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`cursor-pointer px-6 py-2 text-sm transition-colors duration-300 ${
-                  selectedCategory === category
+                className={`cursor-pointer px-6 py-2 text-sm transition-colors duration-300 ${selectedCategory === category
                     ? "bg-white text-[#CAB996] underline"
                     : "bg-transparent text-[#CAB996] hover:underline"
-                }`}
+                  }`}
               >
                 {category}
               </div>
@@ -57,7 +58,10 @@ export default function ExploreCollection() {
         </div>
 
         <div className="mt-15 flex justify-center">
-          <Button className="rounded-full border border-[#430045] bg-[#430045] px-12 py-4 text-lg font-medium text-white transition hover:bg-transparent hover:text-[#430045]">
+          <Button
+            onClick={() => navigate("/product?tags=kids")}
+            className="rounded-full border border-[#430045] bg-[#430045] px-12 py-4 text-lg font-medium text-white transition hover:bg-transparent hover:text-[#430045]"
+          >
             Explore Now
           </Button>
         </div>

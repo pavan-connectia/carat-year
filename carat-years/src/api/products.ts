@@ -15,6 +15,11 @@ export const getProductsByTag = async (tag: string) => {
   return res.data;
 };
 
+export const getProductsByTagWithKid = async (tag: string) => {
+  const res = await axiosInstance.get(`/product/kids/${tag}?limit=6`);
+  return res.data;
+};
+
 export const getFilteredProducts = async ({
   filters = {},
   search = "",

@@ -3,6 +3,7 @@ import {
   getProductBySlug,
   getProducts,
   getProductsByTag,
+  getProductsByTagWithKid,
   getSearchProducts,
 } from "@/api/products";
 
@@ -26,6 +27,13 @@ export const useProductBySlug = (slug: string) => {
 export const useProductsByTag = (tag: string) => {
   return useQuery({
     queryFn: () => getProductsByTag(tag),
+    queryKey: ["products", "tag", tag],
+  });
+};
+
+export const useProductsByTagWithKids = (tag: string) => {
+  return useQuery({
+    queryFn: () => getProductsByTagWithKid(tag),
     queryKey: ["products", "tag", tag],
   });
 };
