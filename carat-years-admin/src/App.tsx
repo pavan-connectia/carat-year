@@ -29,6 +29,7 @@ const NewsletterSub = lazy(() => import("./pages/NewsletterSub"));
 const Profile = lazy(() => import("./pages/Profile"));
 const SuperAdmin = lazy(() => import("./pages/SuperAdmin"));
 const Testimonial = lazy(() => import("./pages/Testimonial"));
+const Home = lazy(() => import("./pages/Home"));
 
 export default function App() {
   return (
@@ -73,6 +74,7 @@ export default function App() {
               <Route path="/dashboard/profile" element={<Profile />} />
               <Route path="/dashboard/super-admin" element={<SuperAdmin />} />
               <Route path="/dashboard/testimonials" element={<Testimonial />} />
+              <Route path="/dashboard/home" element={<Home />} />
               <Route path="/dashboard/users" element={<User />} />
             </Route>
           </Route>

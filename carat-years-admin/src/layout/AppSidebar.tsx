@@ -12,6 +12,7 @@ import {
   Box,
   FileText,
   Users,
+  Home,
 } from "lucide-react";
 import {
   Sidebar,
@@ -121,6 +122,12 @@ const navMain: NavItem[] = [
     title: "Testimonials",
     url: "/dashboard/testimonials",
     icon: MessageSquareQuote,
+    roles: ["Admin", "SuperAdmin"],
+  },
+    {
+    title: "Home",
+    url: "/dashboard/home",
+    icon: Home,
     roles: ["Admin", "SuperAdmin"],
   },
   {

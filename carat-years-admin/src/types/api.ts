@@ -233,3 +233,24 @@ export type TDiscount = {
   order: number;
   publish: boolean;
 };
+
+export type THero = {
+  image: string;
+  title: string;
+  headLine: string;
+  description: string;
+  button1?: string;
+  button2?: string;
+}
+
+export type TCustom = {
+  image: string;
+  title: string;
+  description: string;
+  button: string;
+}
+
+export type THome = {
+  hero: THero;
+  custom: TCustom;
+}
