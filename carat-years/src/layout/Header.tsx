@@ -10,6 +10,7 @@ import SearchDialog from "@/components/shared/SearchDialog";
 import { useCart } from "@/hooks/useCart";
 import MegaMenu from "./MegaMenu";
 import { NAV_LINKS } from "@/lib/constants";
+import { useHome } from "@/hooks/useHome";
 
 
 // const links = [
@@ -36,6 +37,9 @@ export default function Header() {
   const { data } = useCart();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const totalCartItems = data?.data?.items?.length;
+    const { data:headline } = useHome();
+  
+  
 
   const handleMouseEnter = (name: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -99,10 +103,10 @@ export default function Header() {
   return (
     <>
       <div className="font-playfair bg-[#E6E7DF] py-2 text-center text-[10px] sm:text-xs lg:hidden">
-        Celebrate Your Story in Carats
+        {headline?.data?.hero?.headLine}
       </div>
       <div className="font-playfair hidden bg-[#E6E7DF] py-2 text-center text-sm lg:block">
-        Celebrate Your Story in Carats
+       {headline?.data?.hero?.headLine}
       </div>
 
       <header className="bg-gradient text-white lg:hidden">

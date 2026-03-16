@@ -1,32 +1,55 @@
 import { Button } from "../ui/button";
 import Heading from "../ui/Heading";
+import { useHome } from "@/hooks/useHome";
+import Img from "../ui/Img";
 
 export default function Custom() {
+  const { data, isLoading } = useHome();
+
+  const res = data?.data?.custom;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl animate-pulse">
+          <div className="h-10 w-64 bg-gray-300 rounded mb-10"></div>
+          <div className="h-[400px] bg-gray-300 rounded-2xl"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <Heading>Custom Jewellery Design</Heading>
 
         <div className="relative my-12 overflow-hidden rounded-2xl bg-[#D7B388]">
+
           <div className="absolute top-10 right-10 h-24 w-24 animate-pulse rounded-full bg-linear-to-r from-amber-200 to-yellow-300 opacity-20 mix-blend-multiply"></div>
 
           <div className="grid lg:grid-cols-2">
+
+            {/* Image */}
             <div className="relative order-1 h-[300px] sm:h-[400px] lg:order-2 lg:h-full">
-              <img
-                src="/custom.png"
-                alt="carat years"
-                className="h-full w-full object-cover object-center"
+              <Img
+                src={res?.image}
+                alt="Custom jewellery design"
+                className="h-full w-full object-cover object-[center_top]"
               />
             </div>
+
+            {/* Content */}
             <div className="order-2 flex flex-col justify-center space-y-6 rounded-2xl bg-white/90 px-6 py-12 text-center shadow-md lg:order-1 lg:rounded-none lg:bg-transparent lg:px-16 lg:text-left lg:shadow-none">
+
               <h2 className="font-montserrat text-3xl leading-tight font-medium text-gray-900 sm:text-4xl lg:text-5xl">
-                Born from a Vision to Redefine Luxury
+                {res?.title}
               </h2>
+
               <p className="font-playfair text-base font-light text-gray-700 sm:text-lg">
-                At Carat Years, we believe that every story deserves a signature
-                piece. Our Custom Jewelry Design service transforms your ideas,
-                memories.
+                {res?.description}
               </p>
+
               <div className="pt-4">
                 <Button
                   variant="outline"
@@ -35,7 +58,9 @@ export default function Custom() {
                   Start your Custom Design
                 </Button>
               </div>
+
             </div>
+
           </div>
         </div>
       </div>

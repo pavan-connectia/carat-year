@@ -77,8 +77,7 @@ export default function ProductSpecs({
   };
 
   return (
-    <div className="mx-2 my-4 lg:my-0 rounded-2xl bg-[#F8F2E7] border border-[#E8D9B5] shadow-lg overflow-hidden lg:mx-4 lg:mr-10">
-
+    <div className="mx-2 my-4 lg:my-0 rounded-2xl bg-[#F8F2E7] border border-[#E8D9B5] shadow-lg overflow-hidden lg:mx-4">
       {/* HEADER SECTION */}
       <div className="px-4 py-4 lg:px-6 bg-linear-to-r from-amber-50 via-amber-50/80 to-transparent border-b border-amber-100/50">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -103,7 +102,6 @@ export default function ProductSpecs({
       </div>
 
       <div className="px-4 py-5 lg:px-8 lg:py-6 space-y-6">
-
         {/* METAL SELECTION */}
         <div className="flex flex-col lg:flex-row items-start gap-3 lg:gap-6">
           <div className="flex items-center gap-2 w-full lg:w-40 shrink-0">
@@ -130,14 +128,17 @@ export default function ProductSpecs({
                   className="relative group flex flex-col items-center gap-1 cursor-pointer"
                 >
                   <div className={`relative flex items-center justify-center h-10 w-10 lg:h-8 lg:w-8 rounded-full border-2 transition-all
-                    ${isSelected ? "border-[#957127] scale-110 " : ""}`}
+                    ${isSelected ? "border-[#957127] scale-110" : ""}`}
                     style={{ backgroundImage: `url("${bgImage}")`, backgroundSize: "cover" }}
                   >
                     <span className="text-[10px] font-bold text-gray-800">
                       {v.color === "Silver" ? "SL" : v.color === "Platinum" ? "PL" : v.metal}
                     </span>
                   </div>
-                  <span className="lg:hidden text-[10px] text-gray-500 font-medium">{v.color}</span>
+
+                  <div className="hidden lg:block pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-gray-300 bg-white px-1 py-1 text-xs text-black shadow opacity-0 group-hover:opacity-100 transition">
+                    {v.color}
+                  </div>
                 </button>
               );
             })}
@@ -249,14 +250,11 @@ export default function ProductSpecs({
                     <div className="flex flex-col sm:flex-row items-center gap-3">
                       <button
                         onClick={() => setShowSizeSection(!showSizeSection)}
-                        className="relative flex items-center w-full px-4 py-3 border-2 border-[#E8D9B5]
-             transition-all cursor-pointer"
+                        className="relative flex items-center w-full px-4 py-3 border-2 border-[#E8D9B5] transition-all cursor-pointer"
                       >
                         <span className="absolute left-1/2 -translate-x-1/2 text-sm font-medium text-gray-700 text-center">
                           {hasUserSelectedSize ? `Size ${selectedSize}` : "Choose your size"}
                         </span>
-
-
                         <span className="ml-auto">
                           {showSizeSection ? (
                             <ChevronUp className="h-4 w-4" />
@@ -265,7 +263,6 @@ export default function ProductSpecs({
                           )}
                         </span>
                       </button>
-
 
                       <button
                         onClick={() => navigate("/ring-size-guide")}

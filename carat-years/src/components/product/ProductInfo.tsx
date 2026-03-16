@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight, Heart, Share2, ShoppingCart } from "lucide-react";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { ArrowLeft, ArrowRight, Heart, Share2, ShoppingCart} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router";
@@ -54,6 +54,13 @@ export default function ProductInfo({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mediaLoading, setMediaLoading] = useState(true);
   const { mutate } = useAddToWishlist();
+  
+  // Zoom states
+  const [zoomLevel, ] = useState(1.5);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const imageRef = useRef<HTMLDivElement>(null);
+  const zoomContainerRef = useRef<HTMLDivElement>(null);
 
   const allImages = useMemo(() => {
     const images: string[] = [];
@@ -76,6 +83,7 @@ export default function ProductInfo({
 
   useEffect(() => {
     setMediaLoading(true);
+    setIsZoomed(false);
   }, [currentIndex]);
 
   const handleAddToCart = () => {
@@ -100,16 +108,28 @@ export default function ProductInfo({
     });
   };
 
-  // const phone = "919870197167";
+  // Zoom handlers for hover
+  const handleMouseEnter = () => {
+    if (!allImages[currentIndex]?.includes(".mp4")) {
+      setIsZoomed(true);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isZoomed || !imageRef.current) return;
+    
+    const rect = imageRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    setMousePosition({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+  };
+
   const websiteUrl = typeof window !== "undefined" ? window.location.href : "";
-  // const text = `Hi, I need more information about ${product?.title} (Code: ${product?.productCode}). I would like to book an appointment.`;
-
-  // const message = `${text}\n\nWebsite: ${websiteUrl}`;
-  // const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-
-
-
 
   return (
     <div className="container mx-auto px-4 py-12 relative">
@@ -119,44 +139,80 @@ export default function ProductInfo({
         </div>
       )}
       <div className="flex flex-col gap-10 lg:flex-row">
-        {/* LEFT : MEDIA */}
-        <div className="relative flex flex-col items-center lg:w-[45%] mt-12">
+        {/* LEFT : MEDIA - STICKY */}
+        <div className="relative lg:sticky lg:top-24 lg:self-start flex flex-col items-center lg:w-[45%] mt-12">
           <div className="relative w-full max-w-2xl rounded-lg border p-6 shadow-lg flex items-center justify-center">
             <button onClick={() => setCurrentIndex((p) => Math.max(p - 1, 0))} disabled={currentIndex === 0} className="absolute left-2 z-10 rounded-full bg-white p-2 shadow disabled:opacity-50"><ArrowLeft /></button>
-            <div className="relative h-[420px] w-full max-w-xl flex items-center justify-center">
+            
+            
+            <div 
+              ref={zoomContainerRef}
+              className="relative h-[420px] w-full max-w-xl flex items-center justify-center overflow-hidden"
+              onMouseEnter={handleMouseEnter}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
               {mediaLoading && <div className="absolute inset-0 animate-pulse rounded-lg bg-gray-200" />}
+              
               {allImages[currentIndex]?.includes(".mp4") ? (
-                <video src={allImages[currentIndex]} autoPlay loop muted playsInline onLoadedData={() => setMediaLoading(false)} className={`h-full w-full rounded-lg object-contain transition-opacity ${mediaLoading ? "opacity-0" : "opacity-100"}`} />
+                <video 
+                  src={allImages[currentIndex]} 
+                  autoPlay loop muted playsInline 
+                  onLoadedData={() => setMediaLoading(false)} 
+                  className={`h-full w-full rounded-lg object-contain transition-opacity ${mediaLoading ? "opacity-0" : "opacity-100"}`} 
+                />
               ) : (
-                <Img dynamic src={allImages[currentIndex]} alt={product?.title} onLoad={() => setMediaLoading(false)} className={`h-full w-full rounded-lg object-contain transition-opacity ${mediaLoading ? "opacity-0" : "opacity-100"}`} />
+                <div 
+                  ref={imageRef}
+                  className="w-full h-full flex items-center justify-center"
+                >
+                  {isZoomed ? (
+                    <div 
+                      className="relative w-full h-full cursor-crosshair"
+                      style={{
+                        backgroundImage: `url(${allImages[currentIndex]})`,
+                        backgroundPosition: `${mousePosition.x}% ${mousePosition.y}%`,
+                        backgroundSize: `${zoomLevel * 100}%`,
+                        backgroundRepeat: 'no-repeat',
+                        transition: 'background-size 0.1s ease'
+                      }}
+                    />
+                  ) : (
+                    <Img 
+                      dynamic 
+                      src={allImages[currentIndex]} 
+                      alt={product?.title} 
+                      onLoad={() => setMediaLoading(false)} 
+                      className={`h-full w-full rounded-lg object-contain transition-opacity ${mediaLoading ? "opacity-0" : "opacity-100"}`}
+                    />
+                  )}
+                </div>
               )}
             </div>
+            
             <button onClick={() => setCurrentIndex((p) => Math.min(p + 1, allImages.length - 1))} disabled={currentIndex === allImages.length - 1} className="absolute right-2 z-10 rounded-full bg-white p-2 shadow disabled:opacity-50"><ArrowRight /></button>
           </div>
+          
+          {/* Thumbnail Strip */}
           <div className={`mt-6 flex w-full gap-4 overflow-x-auto no-scrollbar ${isFewImages ? "justify-center" : ""}`}>
             {allImages.map((src, idx) => (
-              <div key={idx} onClick={() => setCurrentIndex(idx)} className={`h-39 w-38 shrink-0 cursor-pointer rounded-lg border ${currentIndex === idx ? "border-2 border-[#957127]" : "border-[#957127]"}`}>
-                {src.includes(".mp4") ? <video src={src} muted className="h-full w-full object-cover rounded-lg" /> : <Img dynamic src={src} alt="" className="h-full w-full object-cover rounded-lg" />}
+              <div 
+                key={idx} 
+                onClick={() => setCurrentIndex(idx)} 
+                className={`h-39 w-38 shrink-0 cursor-pointer rounded-lg border-2 overflow-hidden ${currentIndex === idx ? "border-[#957127]" : "border-gray-200"}`}
+              >
+                {src.includes(".mp4") ? (
+                  <video src={src} muted className="h-full w-full object-cover" />
+                ) : (
+                  <Img dynamic src={src} alt="" className="h-full w-full object-cover" />
+                )}
               </div>
             ))}
           </div>
         </div>
 
         {/* RIGHT : DETAILS */}
-        <div className="flex flex-col gap-6 lg:w-[55%]">
-          <div className="flex items-start justify-between gap-4 mr-10">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold">{product?.title}</h1>
-              <p className="text-gray-600 mt-2">{product?.description}</p>
-            </div>
-            {product?.reviews && (
-              <div className="text-right">
-                <div className="flex items-center gap-1 justify-end"><span className="font-semibold text-lg">{product.reviews.averageRating?.toFixed(1)}</span><span className="text-yellow-500">★</span></div>
-                <p className="text-sm text-gray-500">{product.reviews.numberOfReviews} reviews</p>
-              </div>
-            )}
-          </div>
-
+        <div className="flex flex-col gap-6 lg:w-[55%] mt-12">
           <ProductSpecs
             product={product}
             selectedMetal={selectedMetal} setSelectedMetal={setSelectedMetal}
@@ -169,7 +225,7 @@ export default function ProductInfo({
             selectedCaratObj={selectedCaratObj}
           />
 
-          <div className="rounded-2xl border border-[#E8D9B5] bg-linear-to-br from-[#F8F2E7] to-[#F4E8D6] p-5 shadow-md sm:p-6">
+          <div className="rounded-2xl border border-[#E8D9B5] bg-linear-to-br from-[#F8F2E7] to-[#F4E8D6] shadow-md mx-2 lg:mx-4 p-4 my-4 lg:my-0">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               {/* Price Section */}
               <div className="flex-1">
@@ -212,7 +268,6 @@ export default function ProductInfo({
                     </div>
                   </div>
                 ) : (
-                  /* FIXED: Use fallback price calculation */
                   <p className="mt-3 text-3xl font-bold text-[#351043] sm:text-4xl">
                     ₹{(
                       selectedSizeObj?.grossValue ||
@@ -242,7 +297,6 @@ export default function ProductInfo({
                     title={product?.isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
                     onClick={() => {
                       if (product?.isWishlisted) {
-                        // Handle remove from wishlist
                         return;
                       }
 
@@ -277,27 +331,22 @@ export default function ProductInfo({
             </div>
           </div>
 
-          <Button className="w-full bg-[#351043] py-6 text-lg text-white hover:bg-transparent hover:text-[#351043] border border-[#351043]" onClick={() => { handleAddToCart(); navigate("/checkout"); }}>Buy Now</Button>
-          <Button variant="outline" className="w-full py-6 text-lg border border-[#351043] hover:bg-[#351043] hover:text-white" onClick={() => { handleAddToCart(); }}>
-            <ShoppingCart className="mr-2 " /> Add to Cart
-          </Button>
-
-
-          {/* <Button
-            asChild
-            className="w-full bg-[#351043] py-6 text-lg text-white
-             hover:bg-transparent hover:text-[#351043]
-             border border-[#351043]"
-          >
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+          <div className="grid grid-cols-1 gap-4 px-2 sm:grid-cols-2 lg:px-4">
+            <Button 
+              className="h-16 rounded-2xl bg-[#351043] text-lg font-bold text-white shadow-xl transition-all hover:bg-[#4a165c] active:scale-95"
+              onClick={() => { handleAddToCart(); navigate("/checkout"); }}
             >
-              Book an Appointment
-            </a>
-          </Button> */}
-
+              Buy Now
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="h-16 rounded-2xl border-2 border-[#351043] text-lg font-bold text-[#351043] transition-all hover:bg-[#351043] hover:text-white active:scale-95"
+              onClick={handleAddToCart}
+            >
+              <ShoppingCart className="mr-3 h-5 w-5" /> Add to Cart
+            </Button>
+          </div>
         </div>
       </div>
     </div>

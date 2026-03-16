@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CraftedByLook from "@/components/shared/CraftedByLook";
+// import CraftedByLook from "@/components/shared/CraftedByLook";
 import { Button } from "@/components/ui/button";
 import { Filter, Search, X } from "lucide-react";
 import { useFilteredProducts } from "@/hooks/useProducts";
@@ -7,6 +7,7 @@ import ProductCard from "../components/product/ProductCard";
 import { Sidebar } from "@/components/product/Sidebar";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
+import Testimonial from "@/components/shared/Testimonial";
 
 
 export default function Products() {
@@ -270,8 +271,8 @@ export default function Products() {
 
       {/* Bottom Sections */}
       <div className="mt-8 sm:mt-12 md:mt-16 lg:mt-20">
-        {/* <Testimonial /> */}
-        <CraftedByLook />
+        <Testimonial />
+        {/* <CraftedByLook /> */}
       </div>
     </div>
   );

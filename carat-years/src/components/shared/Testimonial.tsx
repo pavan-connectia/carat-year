@@ -14,8 +14,8 @@ const Testimonial = () => {
   useEffect(() => {
     const updateItemsPerPage = () => {
       if (window.innerWidth < 768) setItemsPerPage(1);
-      else if (window.innerWidth < 1024) setItemsPerPage(2);
-      else setItemsPerPage(3);
+      else if (window.innerWidth < 1024) setItemsPerPage(3);
+      else setItemsPerPage(4);
     };
 
     updateItemsPerPage();
@@ -61,7 +61,7 @@ const Testimonial = () => {
 
       <div className="mx-auto max-w-7xl">
         <div className="relative">
-          <div className="grid grid-cols-1 gap-8 lg:gap-16 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:grid-cols-4">
             <AnimatePresence mode="popLayout">
               {visibleTestimonials.map((item, idx) => (
                 <motion.div
@@ -98,11 +98,11 @@ const Testimonial = () => {
                     </div>
 
                     <div className="mb-4">
-                      <h3 className="text-xl font-bold text-gray-900">{item?.name}</h3>
+                      <h3 className="text-lg font-bold text-gray-900">{item?.name}</h3>
                       <p className="text-sm font-semibold text-blue-600">{item?.role}</p>
                     </div>
 
-                    <p className="text-gray-600 italic leading-relaxed">
+                    <p className="text-gray-600 italic leading-relaxed text-md">
                       “{item?.description}”
                     </p>
                   </div>

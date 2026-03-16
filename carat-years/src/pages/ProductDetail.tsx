@@ -1,5 +1,5 @@
-import CraftedByLook from "@/components/shared/CraftedByLook";
-import { useNavigate, useParams } from "react-router";
+// import CraftedByLook from "@/components/shared/CraftedByLook";
+import {  useParams } from "react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useProductBySlug } from "@/hooks/useProducts";
 import SimilarProducts from "@/components/product/SimilarProducts";
@@ -7,18 +7,19 @@ import ProductPriceBreakup from "@/components/product/ProductPriceBreakup";
 import ProductInfo from "@/components/product/ProductInfo";
 import { usePreviewDiscount } from "@/hooks/useDiscounts";
 import FloatingWhatsapp from "@/components/shared/FloatingWhtasapp";
-import { useAddToCart } from "@/hooks/useCart";
-import { toast } from "sonner";
-import useUserStore from "@/store/userStore";
+// import { useAddToCart } from "@/hooks/useCart";
+// import { toast } from "sonner";
+// import useUserStore from "@/store/userStore";
 import StickyProductBar from "@/components/product/StickyProductBar"; 
+import Testimonial from "@/components/shared/Testimonial";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const { data } = useProductBySlug(id ?? "");
   const product = data?.data;
-  const { mutate: addCartMutate } = useAddToCart();
-  const navigate = useNavigate();
-  const { token } = useUserStore();
+  // const { mutate: addCartMutate } = useAddToCart();
+  // const navigate = useNavigate();
+  // const { token } = useUserStore();
 
   const [selectedMetal, setSelectedMetal] = useState<any>(null);
   const [selectedColor, setSelectedColor] = useState<any>(null);
@@ -165,32 +166,32 @@ export default function ProductDetail() {
   }, [selectedCaratObj, calculatedDiamondDetails, discountPreview]);
 
 
-  const handleAddToCart = () => {
-    if (!token) {
-      navigate("/signup");
-      return;
-    }
+  // const handleAddToCart = () => {
+  //   if (!token) {
+  //     navigate("/signup");
+  //     return;
+  //   }
 
-    const sizeRequired = product?.title === "Ring" || product?.title === "Bracelet";
+  //   const sizeRequired = product?.title === "Ring" || product?.title === "Bracelet";
 
-    if (!selectedMetal || !selectedColor || !selectedShape || !selectedCarat || (sizeRequired && !selectedSize)) {
-      toast.error("Please select all options");
-      return;
-    }
+  //   if (!selectedMetal || !selectedColor || !selectedShape || !selectedCarat || (sizeRequired && !selectedSize)) {
+  //     toast.error("Please select all options");
+  //     return;
+  //   }
 
-    addCartMutate({
-      productId: product?._id,
-      metal: selectedMetal,
-      color: selectedColor,
-      designType: product?.designType,
-      style: product?.style,
-      stone: product?.stone,
-      shape: selectedShape,
-      carat: selectedCarat,
-      size: sizeRequired ? selectedSize : "N/A",
-      quantity: 1,
-    });
-  };
+  //   addCartMutate({
+  //     productId: product?._id,
+  //     metal: selectedMetal,
+  //     color: selectedColor,
+  //     designType: product?.designType,
+  //     style: product?.style,
+  //     stone: product?.stone,
+  //     shape: selectedShape,
+  //     carat: selectedCarat,
+  //     size: sizeRequired ? selectedSize : "N/A",
+  //     quantity: 1,
+  //   });
+  // };
 
   useEffect(() => {
     if (!selectedVariation || !selectedShapeObj || !selectedCaratObj) return;
@@ -245,11 +246,11 @@ export default function ProductDetail() {
         isCalculating={isCalculating}
       />
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 pb-12">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
           <div className="lg:w-1/2">
           </div>
-          <div className="flex flex-col gap-6 lg:w-1/2">
+          <div className="flex flex-col gap-6 lg:w-[55%]">
             <ProductPriceBreakup
               selectedMetal={selectedMetal}
               selectedColor={selectedColor}
@@ -264,7 +265,8 @@ export default function ProductDetail() {
 
       <SimilarProducts tags={product?.tags ?? []} currentId={product?._id ?? ""} />
       <FloatingWhatsapp text={`I need more information about this product (Code: ${product?.productCode})`} />
-      <CraftedByLook />
+      <Testimonial />
+      {/* <CraftedByLook /> */}
     </>
   );
 }

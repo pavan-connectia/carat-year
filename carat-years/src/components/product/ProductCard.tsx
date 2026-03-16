@@ -13,6 +13,7 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [isImageHovered, setIsImageHovered] = useState(false);
   const { token } = useUserStore();
   const { mutate } = useAddToWishlist();
   // const { mutate: addCartMutate } = useAddToCart();
@@ -23,7 +24,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const selectedVariation = product?.variations?.[selectedVariationIndex];
   const selectedShape = selectedVariation?.shapes?.[0] ?? null;
-  const selectedImage = selectedShape?.images?.[0] ?? "/placeholder.png";
+  const selectedImage = isImageHovered
+    ? selectedShape?.images?.[1] || selectedShape?.images?.[0] || "/placeholder.png"
+    : selectedShape?.images?.[0] || "/placeholder.png";
   const selectedCarat = selectedShape?.carats?.[0] ?? null;
   const selectedSize = selectedCarat?.sizes?.[0] ?? null;
 
@@ -123,12 +126,16 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Product Image */}
       <Link to={`/product/${product?.category?.slug}/${product?.slug}`}>
-        <div className="flex h-64 items-center justify-center bg-gray-50">
+        <div
+          className="flex h-64 items-center justify-center bg-gray-50"
+          onMouseEnter={() => setIsImageHovered(true)}
+          onMouseLeave={() => setIsImageHovered(false)}
+        >
           <Img
             dynamic
             src={selectedImage}
             alt={product?.description || "Product"}
-            className="h-48 w-48 object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-48 w-48 object-contain transition-all duration-300"
           />
         </div>
       </Link>
