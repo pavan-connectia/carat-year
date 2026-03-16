@@ -72,12 +72,14 @@ import testimonialsRoutes from "./routes/testimonialsRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
 import userRoutes from "./routes/userRoutes";
 import wishlistRoutes from "./routes/wishlistRoutes";
+import HomeRoutes from "./routes/homeRoutes"
 
 import "./cron/deleteOldUsers";
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: "20mb" }));
+app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(compression({ filter: shouldCompress, level: 6 }));
 
@@ -120,6 +122,7 @@ app.use("/super-admin", superAdminRoutes);
 app.use("/testimonials", testimonialsRoutes);
 app.use("/user", userRoutes);
 app.use("/wishlist", wishlistRoutes);
+app.use("/home", HomeRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ success: false, message: "Route not found" });

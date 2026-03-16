@@ -152,7 +152,15 @@ export const updateProduct = asyncHandler(
         message: "Product not found",
       });
 
+    if (product.order === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: "Product order is not defined",
+      });
+    }
+
     const oldOrder = product.order;
+
 
     if (newOrder !== undefined && newOrder !== oldOrder) {
       if (newOrder > oldOrder) {
@@ -301,6 +309,107 @@ export const getProductByTag = asyncHandler(
   }
 );
 
+export const getProductsByTagWithKids = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { tag } = req.params;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    // Normalize the tag from the URL (e.g., "Earrings" -> "earrings")
+    const normalizedTag = tag?.toLowerCase() || "all";
+
+    // 1. Build the Filter
+    // We start by requiring "publish: true"
+    const filter: any = { publish: true };
+
+    // Because this is a "kids" specific endpoint, 
+    // the "kids" tag must ALWAYS be present in the products.
+    const tagsToMatch = ["kids"];
+
+    // If the user is looking for a specific category (e.g., "earrings") 
+    // and not just "all", we add that tag to our requirements.
+    if (normalizedTag !== "all" && normalizedTag !== "kids") {
+      tagsToMatch.push(normalizedTag);
+    }
+
+    // Use $all to ensure the product has EVERY tag in the array (AND logic)
+    // We use Regex for case-insensitive matching.
+    filter.tags = {
+      $all: tagsToMatch.map((t) => new RegExp(`^${t}$`, "i")),
+    };
+
+    // 2. Fetch Products
+    const products = await Product.find(filter)
+      .sort({ order: 1 })
+      .populate("category", "title slug")
+      .limit(limit)
+      .lean();
+
+    // 3. Handle Wishlist Logic
+    let userId: string | null = null;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (token) {
+      try {
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+        userId = decoded._id;
+      } catch {
+        userId = null;
+      }
+    }
+
+    let wishlistedIds = new Set<string>();
+    if (userId) {
+      const wishlist = await Wishlist.find({ userId }).lean();
+      wishlist.forEach((w) => wishlistedIds.add(w.slug));
+    }
+
+    // 4. Simplify Variations Logic
+    // This groups variations by color and picks the first shape/carat for display
+    const simplifiedProducts = products.map((product: any) => {
+      const uniqueColors = new Map<string, any>();
+
+      for (const variation of product.variations || []) {
+        const colorKey = variation.color?.toLowerCase();
+
+        if (!uniqueColors.has(colorKey)) {
+          const firstShape = variation.shapes?.[0];
+          const firstCarat = firstShape?.carats?.[0] ? { ...firstShape.carats[0] } : null;
+
+          const simplifiedShape = firstShape
+            ? {
+                shape: firstShape.shape,
+                images: firstShape.images?.slice(0, 1) || [],
+                carats: firstCarat ? [firstCarat] : [],
+              }
+            : null;
+
+          uniqueColors.set(colorKey, {
+            metal: variation.metal,
+            color: variation.color,
+            shapes: simplifiedShape ? [simplifiedShape] : [],
+          });
+        }
+      }
+
+      return {
+        ...product,
+        variations: Array.from(uniqueColors.values()),
+        isWishlisted: userId ? wishlistedIds.has(product.slug) : false,
+      };
+    });
+
+    // 5. Send Response
+    return res.status(200).json({
+      success: true,
+      message:
+        normalizedTag === "all"
+          ? "All kids products fetched successfully"
+          : `Products fetched for tag: ${normalizedTag} + kids`,
+      data: simplifiedProducts,
+    });
+  }
+);
+
 
 export const getFilteredProducts = asyncHandler(
   async (req: Request, res: Response) => {
@@ -395,20 +504,23 @@ export const getFilteredProducts = asyncHandler(
     }
 
     // 5. NESTED VARIATION FILTERS
+    // 5. NESTED VARIATION FILTERS
     const variationMatch: any = {};
 
     if (metal) {
-      const metalArray = (metal as string).split(",").map(m => m.trim());
+      // Replace hyphens with spaces so "white-gold" becomes "white gold"
+      const metalArray = (metal as string).split(",").map(m => m.trim().replace(/-/g, ' '));
       variationMatch.metal = { $in: metalArray.map(m => new RegExp(`^${m}$`, "i")) };
     }
 
     if (color) {
-      const colorArray = (color as string).split(",").map(c => c.trim());
+      // Replace hyphens with spaces so "rose-gold" becomes "rose gold"
+      const colorArray = (color as string).split(",").map(c => c.trim().replace(/-/g, ' '));
       variationMatch.color = { $in: colorArray.map(c => new RegExp(`^${c}$`, "i")) };
     }
 
     if (shape) {
-      const shapeArray = (shape as string).split(",").map(s => s.trim());
+      const shapeArray = (shape as string).split(",").map(s => s.trim().replace(/-/g, ' '));
       variationMatch["shapes.shape"] = {
         $in: shapeArray.map(s => new RegExp(`^${s}$`, "i"))
       };
@@ -418,6 +530,8 @@ export const getFilteredProducts = asyncHandler(
       const priceFilter: any = {};
       if (minPrice) priceFilter.$gte = Number(minPrice);
       if (maxPrice) priceFilter.$lte = Number(maxPrice);
+
+      // Path must match your schema depth: variations -> shapes -> carats -> totalAmt
       variationMatch["shapes.carats.totalAmt"] = priceFilter;
     }
 

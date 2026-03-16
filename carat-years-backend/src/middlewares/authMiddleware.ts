@@ -31,3 +31,31 @@ export const protect = asyncHandler(
     next();
   }
 );
+
+export const resolveUser = asyncHandler(
+  async (req: any, res: any, next: NextFunction) => {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return next(); 
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+      let user;
+      if (decoded.role === "User") {
+        user = await User.findById(decoded._id).select("-password");
+      } else {
+        user = await SuperAdmin.findById(decoded._id).select("-password");
+      }
+
+      if (user) {
+        req.user = user;
+      }
+      next();
+    } catch (error) {
+      next();
+    }
+  }
+);

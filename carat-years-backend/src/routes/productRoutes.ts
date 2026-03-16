@@ -10,6 +10,7 @@ import {
   searchProducts,
   getProductByTag,
   createManyProducts,
+  getProductsByTagWithKids,
 } from "../controllers/productController";
 import { protect } from "../middlewares/authMiddleware";
 import { authorize } from "../middlewares/roleMiddleware";
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post("/", protect, authorize(["SuperAdmin"]), createProduct);
 router.post("/bulk", createManyProducts);
 router.get("/tag/:tag", getProductByTag);
+router.get("/kids/:tag", getProductsByTagWithKids)
 router.get("/search", searchProducts);
 router.get("/filter", getFilteredProducts);
 router.get("/:slug", getProductById);

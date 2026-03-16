@@ -1,5 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
+
 export interface IRate extends Document {
   metal: {
     "9k": number;
@@ -34,7 +35,7 @@ const rateSchema = new Schema<IRate>(
       "14k": { type: Number, required: true, default: 0 },
       "18k": { type: Number, required: true, default: 0 },
       silver: { type: Number, required: true, default: 0 },
-      platinum:{ type: Number, required: false, default: 0 },
+      platinum: { type: Number, required: false, default: 0 },
     },
     diamond: {
       d1: { type: Number, required: true, default: 0 },
@@ -42,7 +43,7 @@ const rateSchema = new Schema<IRate>(
       d3: { type: Number, required: true, default: 0 },
       d4: { type: Number, required: true, default: 0 },
       d5: { type: Number, required: true, default: 0 },
-      d6: { type: Number, required: true, default: 0 },
+      d6: {type: Number, required: true, default: 0 },
       d7: { type: Number, required: true, default: 0 },
       d8: { type: Number, required: true, default: 0 },
       d9: { type: Number, required: true, default: 0 },

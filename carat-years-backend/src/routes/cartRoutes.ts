@@ -7,17 +7,19 @@ import {
   clearCart,
   applyDiscount,
   removeDiscount,
+  syncCart,
 } from "../controllers/cartController";
-import { protect } from "../middlewares/authMiddleware";
+import {protect, resolveUser } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
-router.get("/", protect, getCart);
-router.post("/add", protect, addToCart);
-router.post("/discount", protect, applyDiscount);
-router.put("/update", protect, updateCartItem);
-router.delete("/remove", protect, removeFromCart);
-router.delete("/clear", protect, clearCart);
-router.delete("/discount", protect, removeDiscount);
+router.route("/").post(resolveUser, getCart).get(resolveUser, getCart);
+router.post("/add", resolveUser, addToCart);
+router.post("/sync", protect, syncCart);
+router.post("/discount", resolveUser, applyDiscount);
+router.put("/update", resolveUser, updateCartItem);
+router.delete("/remove", resolveUser, removeFromCart);
+router.delete("/clear", resolveUser, clearCart);
+router.delete("/discount", resolveUser, removeDiscount);
 
 export default router;

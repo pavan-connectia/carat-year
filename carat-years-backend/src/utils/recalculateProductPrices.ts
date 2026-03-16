@@ -43,7 +43,7 @@ export const recalculateAllProductPrices = async () => {
           });
 
           const diamondAmt = diamondRates.map(
-            (r, i) => r * (carat.diamondWeight[i] || 0)
+            (r:any, i) => r * (carat.diamondWeight[i] || 0)
           );
 
           // 🔹 Compute recalculated totals

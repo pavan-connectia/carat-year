@@ -23,12 +23,37 @@ interface CaratOption {
   labourAmt?: number;
 }
 
+// /**
+//  * 1. SHARED SEARCH LOGIC
+//  * Finds the correct pricing data row. 
+//  * If the user picks 1.4ct and we only have a 1.0ct row, it falls back to the 1.0ct row 
+//  * so we can use its 'Rate' for the calculation.
+//  */
+// const getCaratPricingData = (shapeObj: any, requestedCarat: number) => {
+//   // Try Exact Match (e.g., 1.0 === 1.0)
+//   let caratObj = shapeObj.carats.find((c: any) => {
+//     const dbCarat = parseFloat(String(c.carat));
+//     return dbCarat.toFixed(3) === requestedCarat.toFixed(3);
+//   });
 
-// Updated to accept the requested weight for dynamic calculations
+//   // Fallback: Find the record that contains dynamic pricing categories (D1-D10)
+//   if (!caratObj) {
+//     caratObj = shapeObj.carats.find((c: any) =>
+//       c.diamondCategory?.some((cat: any) =>
+//         /^D([1-9]|10)$/i.test(String(cat).trim())
+//       )
+//     );
+//   }
+//   return caratObj;
+// };
+
+/**
+ * 2. SHARED CALCULATION LOGIC
+ * Handles the math for Metal, Labour, Fixed Diamonds, and Dynamic Diamonds (D1-D10).
+ */
 const calculateDiamondPrice = (caratObj: any, requestedCarat: number) => {
   const {
     diamondCategory = [],
-    diamondWeight = [],
     diamondRate = [],
     diamondAmt = [],
     metalAmt = 0,
@@ -39,23 +64,32 @@ const calculateDiamondPrice = (caratObj: any, requestedCarat: number) => {
   let fixedDiamondTotal = 0;
 
   diamondCategory.forEach((cat: string, index: number) => {
+    const categoryName = String(cat).trim().toUpperCase();
     const rate = parseFloat(diamondRate[index]) || 0;
 
-    // MATCH FRONTEND LOGIC: 
-    // If category is d6-d10, multiply Rate by the user's SELECTED carat
-    if (/^d([6-9]|10)$/i.test(cat)) {
+    // D1 through D10: If a Rate exists, multiply by requested carat.
+    // This ensures center stones (D1) and side stones (D2-D10) all scale correctly.
+    const isDynamic = /^D([1-9]|10)$/.test(categoryName);
+
+    if (isDynamic && rate > 0) {
       recalculatedDiamondTotal += rate * requestedCarat;
     } else {
-      // Otherwise use the fixed amount from the DB
+      // Otherwise use the fixed amount stored in the database
       fixedDiamondTotal += parseFloat(diamondAmt[index]) || 0;
     }
   });
 
-  return Math.round(metalAmt + labourAmt + fixedDiamondTotal + recalculatedDiamondTotal);
+  const total =
+    (parseFloat(metalAmt) || 0) +
+    (parseFloat(labourAmt) || 0) +
+    fixedDiamondTotal +
+    recalculatedDiamondTotal;
+
+  return Math.round(total || 0);
 };
 
 export const addToCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
   const {
     productId,
     metal,
@@ -88,7 +122,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     shapeObj = variation.shapes.find((s: any) =>
       s.carats?.some((c: any) =>
         c.diamondCategory?.some((cat: any) =>
-          /^d(6|7|8|9|10)$/i.test(String(cat).trim())
+          /^d(2|3|4|5|6|7|8|9|10)$/i.test(String(cat).trim())
         )
       )
     );
@@ -99,39 +133,26 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
   const reqCaratNum = parseFloat(String(carat));
 
   // 4. Find Carat Object
-  // First attempt: Exact match
   let caratObj = shapeObj.carats.find((c: any) => {
     const dbCarat = parseFloat(String(c.carat));
     return dbCarat.toFixed(3) === reqCaratNum.toFixed(3);
   });
 
-  // Second attempt: Fallback for dynamic carats (D6-D10)
+  // Fallback search: find the first carat record that handles dynamic pricing
   if (!caratObj) {
     caratObj = shapeObj.carats.find((c: any) => {
-      if (!c.diamondCategory || !Array.isArray(c.diamondCategory)) return false;
-
-      return c.diamondCategory.some((cat: any) => {
-        const catStr = String(cat).toLowerCase().trim();
-        // More robust check: starts with 'd' and is followed by 6, 7, 8, 9, or 10
-        const match = catStr.match(/^d(6|7|8|9|10)$/);
-        return !!match;
-      });
+      if (!c.diamondCategory) return false;
+      return c.diamondCategory.some((cat: any) =>
+        /^D([2-9]|10)$/i.test(String(cat).trim())
+      );
     });
   }
 
-  // Final check
   if (!caratObj) {
-    return res.status(404).json({
-      success: false,
-      message: "Carat not found 1",
-    });
+    return res.status(404).json({ success: false, message: "Pricing tier not found" });
   }
 
-  // 5. Calculate Price (using the function you provided)
   const calculatedPrice = calculateDiamondPrice(caratObj, reqCaratNum);
-
-  // 6. Cart Management
-  let cart = await Cart.findOne({ user: userId });
 
   const newItem = {
     product: productId,
@@ -146,6 +167,17 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     quantity,
     price: calculatedPrice,
   };
+
+  if (!userId) {
+    return res.status(200).json({
+      success: true,
+      message: "Price calculated (Guest Mode)",
+      data: { guestItem: newItem }
+    });
+  }
+
+  // 6. Cart Management
+  let cart = await Cart.findOne({ user: userId });
 
   if (!cart) {
     cart = await Cart.create({ user: userId, items: [newItem] });
@@ -177,7 +209,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
 
 export const removeFromCart = asyncHandler(
   async (req: Request, res: Response) => {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const { productId, metal, color, shape, carat, size } = req.body;
 
     const cart = await Cart.findOne({ user: userId });
@@ -207,7 +239,7 @@ export const removeFromCart = asyncHandler(
 
 export const updateCartItem = asyncHandler(
   async (req: Request, res: Response) => {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const { productId, metal, color, shape, carat, size, quantity } = req.body;
 
     const cart = await Cart.findOne({ user: userId });
@@ -245,15 +277,24 @@ export const updateCartItem = asyncHandler(
 );
 
 export const getCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
+  
+  let rawItems = [];
+  let discountCode = null;
 
-  const cart = await Cart.findOne({ user: userId }).populate({
-    path: "items.product",
-    model: Product,
-    select: "title slug variations category designType style stone",
-  });
+  // 1. Identify Data Source
+  if (userId) {
+    // Logged in: Get from Database
+    const cart = await Cart.findOne({ user: userId });
+    rawItems = cart?.items || [];
+    discountCode = cart?.discountCode;
+  } else {
+    // Guest: Get from Request Body (Frontend sends localStorage items here)
+    rawItems = req.body.items || [];
+    discountCode = req.body.discountCode || null;
+  }
 
-  if (!cart || cart.items.length === 0) {
+  if (!rawItems || rawItems.length === 0) {
     return res.status(200).json({
       success: true,
       message: "Cart is empty",
@@ -261,11 +302,11 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
     });
   }
 
-  // 1. Fetch Discount Info
+  // 2. Fetch Discount Info
   let discount: any = null;
-  if (cart.discountCode) {
+  if (discountCode) {
     const found = await Discount.findOne({
-      code: cart.discountCode.trim().toUpperCase(),
+      code: discountCode.trim().toUpperCase(),
       publish: true,
     }).lean();
     if (found) {
@@ -274,18 +315,21 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
         labDiscount: found.labDiscount || 0,
         diamondDiscount: found.diamondDiscount || 0,
       };
-    } else {
-      cart.discountCode = null; // Remove invalid code
     }
   }
 
-  // 2. Refine Items with Dynamic Calculation
-  const refinedItems = cart.items.map((item: any) => {
-    const product = item.product as any;
-    if (!product || !product.variations) return item.toObject();
+  // 3. Refine Items with Dynamic Calculation
+  // We use Promise.all because we need to fetch product info for guest items
+  const refinedItems = await Promise.all(rawItems.map(async (item: any) => {
+    // If it's a guest item, 'product' is just an ID string. If DB item, it's an object.
+    const productId = item.product._id || item.product;
+    
+    const productDoc = await Product.findById(productId).select("title slug variations category designType style stone").lean();
+    if (!productDoc) return null;
 
-    const variation = product.variations.find(
-      (v: any) => v.metal === item.metal && v.color === item.color
+    const variation = productDoc.variations.find(
+      (v: any) => v.metal.toLowerCase() === item.metal.toLowerCase() && 
+                  v.color.toLowerCase() === item.color.toLowerCase()
     );
 
     let metalAmt = 0, labourAmt = 0, diamondAmtTotal = 0, totalAmt = 0, image = null;
@@ -296,31 +340,24 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
       );
 
       if (!shapeObj) {
-        // Allow any shape if dynamic diamonds exist
         shapeObj = variation.shapes.find((s: any) =>
           s.carats?.some((c: any) =>
-            c.diamondCategory?.some((cat: string) =>
-              /^d([6-9]|10)$/i.test(cat)
-            )
+            c.diamondCategory?.some((cat: string) => /^d([2-9]|10)$/i.test(cat))
           )
         );
       }
 
       if (shapeObj) {
         image = shapeObj.images?.[0] || null;
-
-        // --- DYNAMIC CARAT FINDING (Same as addToCart) ---
         const reqCarat = parseFloat(String(item.carat));
 
-        // Try exact match first
         let caratObj = shapeObj.carats.find(
           (c: any) => parseFloat(String(c.carat)).toFixed(3) === reqCarat.toFixed(3)
         );
 
-        // Fallback to D6-D10 template if no exact match
         if (!caratObj) {
           caratObj = shapeObj.carats.find((c: any) =>
-            c.diamondCategory?.some((cat: string) => /^d([6-9]|10)$/i.test(cat))
+            c.diamondCategory?.some((cat: string) => /^d([2-9]|10)$/i.test(cat))
           );
         }
 
@@ -329,14 +366,11 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
           metalAmt = (caratObj.metalAmt || 0) * qty;
           labourAmt = (caratObj.labourAmt || 0) * qty;
 
-          // Calculate Diamond Total based on category
           let itemDiamondTotal = 0;
           caratObj.diamondCategory.forEach((cat: string, idx: number) => {
-            if (/^d([6-9]|10)$/i.test(cat)) {
-              // Dynamic logic: Rate * User's Carat Selection
+            if (/^d([2-9]|10)$/i.test(cat)) {
               itemDiamondTotal += (caratObj.diamondRate[idx] || 0) * reqCarat;
             } else {
-              // Fixed logic: DB Amount
               itemDiamondTotal += (caratObj.diamondAmt[idx] || 0);
             }
           });
@@ -347,19 +381,18 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
       }
     }
 
-    // 3. Apply Discounts
     const labDiscountAmt = discount ? (labourAmt * discount.labDiscount) / 100 : 0;
     const diamondDiscountAmt = discount ? (diamondAmtTotal * discount.diamondDiscount) / 100 : 0;
     const totalDiscountAmt = labDiscountAmt + diamondDiscountAmt;
     const finalAmt = totalAmt - totalDiscountAmt;
 
     return {
-      ...item.toObject(),
+      ... (item.toObject ? item.toObject() : item),
       product: {
-        _id: product._id,
-        title: product.title,
-        slug: product.slug,
-        category: product.category,
+        _id: productDoc._id,
+        title: productDoc.title,
+        slug: productDoc.slug,
+        category: productDoc.category,
         image,
       },
       priceDetails: {
@@ -373,20 +406,23 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
         finalAmt: Math.round(finalAmt),
       },
     };
-  });
+  }));
 
-  // 4. Calculate Cart Totals
-  const subtotal = refinedItems.reduce((acc, item) => acc + (item.priceDetails?.totalAmt || 0), 0);
-  const totalLabDiscount = refinedItems.reduce((acc, item) => acc + (item.priceDetails?.labDiscountAmt || 0), 0);
-  const totalDiamondDiscount = refinedItems.reduce((acc, item) => acc + (item.priceDetails?.diamondDiscountAmt || 0), 0);
+  // Filter out any nulls (products not found)
+  const validItems = refinedItems.filter(i => i !== null);
+
+  // 4. Calculate Totals
+  const subtotal = validItems.reduce((acc, item) => acc + (item.priceDetails?.totalAmt || 0), 0);
+  const totalLabDiscount = validItems.reduce((acc, item) => acc + (item.priceDetails?.labDiscountAmt || 0), 0);
+  const totalDiamondDiscount = validItems.reduce((acc, item) => acc + (item.priceDetails?.diamondDiscountAmt || 0), 0);
   const totalDiscount = totalLabDiscount + totalDiamondDiscount;
   const finalTotal = subtotal - totalDiscount;
 
   return res.status(200).json({
     success: true,
-    message: "Cart fetched successfully",
+    message: userId ? "Cart fetched from DB" : "Cart calculated for Guest",
     data: {
-      items: refinedItems,
+      items: validItems,
       subtotal,
       totalLabDiscount,
       totalDiamondDiscount,
@@ -398,7 +434,7 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const clearCart = asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user._id;
+  const userId = req.user?._id;
   const cart = await Cart.findOne({ user: userId });
   if (!cart)
     return res.status(404).json({ success: false, message: "Cart not found" });
@@ -411,7 +447,7 @@ export const clearCart = asyncHandler(async (req: Request, res: Response) => {
 
 export const applyDiscount = asyncHandler(
   async (req: Request, res: Response) => {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const { code } = req.body;
 
     if (!code) {
@@ -459,7 +495,7 @@ export const applyDiscount = asyncHandler(
 
 export const removeDiscount = asyncHandler(
   async (req: Request, res: Response) => {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
@@ -478,3 +514,56 @@ export const removeDiscount = asyncHandler(
     });
   }
 );
+
+export const syncCart = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?._id;
+  const { localItems } = req.body;
+
+  if (!localItems || localItems.length === 0) {
+    return res.status(200).json({ success: true, message: "Nothing to sync" });
+  }
+
+  let cart = await Cart.findOne({ user: userId });
+  
+  if (!cart) {
+    cart = new Cart({ user: userId, items: localItems });
+  } else {
+    localItems.forEach((lItem: any) => {
+      const existingItemIndex = cart!.items.findIndex((i: any) => {
+        const isSameProduct = i.product.toString() === lItem.product;
+        const isSameMetal = i.metal.toLowerCase() === lItem.metal.toLowerCase();
+        const isSameColor = i.color.toLowerCase() === lItem.color.toLowerCase();
+        const isSameShape = i.shape.toLowerCase() === lItem.shape.toLowerCase();
+        
+        const isSameCarat = parseFloat(String(i.carat)).toFixed(3) === parseFloat(String(lItem.carat)).toFixed(3);
+
+        const normalizeSize = (s: any) => (s ? String(s).trim() : "");
+        const isSameSize = normalizeSize(i.size) === normalizeSize(lItem.size);
+
+        return (
+          isSameProduct && 
+          isSameMetal && 
+          isSameColor && 
+          isSameShape && 
+          isSameCarat && 
+          isSameSize
+        );
+      });
+
+      if (existingItemIndex > -1) {
+        cart!.items[existingItemIndex].quantity += lItem.quantity;
+        if (lItem.price) cart!.items[existingItemIndex].price = lItem.price;
+      } else {
+        cart!.items.push(lItem);
+      }
+    });
+  }
+
+  await cart.save();
+  
+  return res.status(200).json({ 
+    success: true, 
+    message: "Cart synced successfully", 
+    data: cart 
+  });
+});

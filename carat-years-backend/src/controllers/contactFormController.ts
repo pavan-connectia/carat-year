@@ -4,15 +4,37 @@ import { ContactForm } from "../models/ContactForm";
 
 export const createContactForm = asyncHandler(
   async (req: Request, res: Response) => {
-    const contactForm = await ContactForm.create(req.body);
+    const { name, email, phone, message } = req.body;
+
+    if (!email && !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Either email or phone is required",
+      });
+    }
+
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required",
+      });
+    }
+
+    const contactForm = await ContactForm.create({
+      name,
+      email,
+      phone,
+      message,
+    });
 
     return res.status(201).json({
       success: true,
-      message: "Contact form form submitted successfully",
+      message: "Contact form submitted successfully",
       data: contactForm,
     });
   }
 );
+
 
 export const getAllContactForm = asyncHandler(
   async (req: Request, res: Response) => {

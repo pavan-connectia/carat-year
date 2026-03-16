@@ -19,7 +19,7 @@ export interface ICart extends Document {
   items: ICartItem[];
   subtotal: number;
   total: number;
-  discountCode?: string;
+  discountCode?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
