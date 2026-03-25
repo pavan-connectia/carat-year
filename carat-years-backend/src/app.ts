@@ -99,6 +99,8 @@ app.use(cors({
   credentials: true
 }));
 
+app.options("*", cors());
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("API is running");

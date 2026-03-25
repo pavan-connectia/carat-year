@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "middlewares/asyncHandler";
-import { Home } from "models/Home";
+import { asyncHandler } from "../middlewares/asyncHandler";
+import { Home } from "../models/Home";
 
 export const getHome = asyncHandler(
   async (req: Request, res: Response) => {

@@ -69,7 +69,7 @@ const calculateDiamondPrice = (caratObj: any, requestedCarat: number) => {
 
     // D1 through D10: If a Rate exists, multiply by requested carat.
     // This ensures center stones (D1) and side stones (D2-D10) all scale correctly.
-    const isDynamic = /^D([1-9]|10)$/.test(categoryName);
+    const isDynamic = /^D([2-9]|10|1[6-9]|20)$/.test(categoryName);
 
     if (isDynamic && rate > 0) {
       recalculatedDiamondTotal += rate * requestedCarat;
@@ -122,7 +122,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     shapeObj = variation.shapes.find((s: any) =>
       s.carats?.some((c: any) =>
         c.diamondCategory?.some((cat: any) =>
-          /^d(2|3|4|5|6|7|8|9|10)$/i.test(String(cat).trim())
+          /^D(1[6-9]|2[0-9]|30)$/i.test(String(cat).trim())
         )
       )
     );
@@ -143,7 +143,7 @@ export const addToCart = asyncHandler(async (req: Request, res: Response) => {
     caratObj = shapeObj.carats.find((c: any) => {
       if (!c.diamondCategory) return false;
       return c.diamondCategory.some((cat: any) =>
-        /^D([2-9]|10)$/i.test(String(cat).trim())
+        /^D(1[6-9]|2[0-9]|30)$/i.test(String(cat).trim())
       );
     });
   }
@@ -278,7 +278,7 @@ export const updateCartItem = asyncHandler(
 
 export const getCart = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?._id;
-  
+
   let rawItems = [];
   let discountCode = null;
 
@@ -323,13 +323,13 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
   const refinedItems = await Promise.all(rawItems.map(async (item: any) => {
     // If it's a guest item, 'product' is just an ID string. If DB item, it's an object.
     const productId = item.product._id || item.product;
-    
+
     const productDoc = await Product.findById(productId).select("title slug variations category designType style stone").lean();
     if (!productDoc) return null;
 
     const variation = productDoc.variations.find(
-      (v: any) => v.metal.toLowerCase() === item.metal.toLowerCase() && 
-                  v.color.toLowerCase() === item.color.toLowerCase()
+      (v: any) => v.metal.toLowerCase() === item.metal.toLowerCase() &&
+        v.color.toLowerCase() === item.color.toLowerCase()
     );
 
     let metalAmt = 0, labourAmt = 0, diamondAmtTotal = 0, totalAmt = 0, image = null;
@@ -342,7 +342,7 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
       if (!shapeObj) {
         shapeObj = variation.shapes.find((s: any) =>
           s.carats?.some((c: any) =>
-            c.diamondCategory?.some((cat: string) => /^d([2-9]|10)$/i.test(cat))
+            c.diamondCategory?.some((cat: string) => /^d(1[6-9]|2[0-9]|30)$/i.test(cat))
           )
         );
       }
@@ -357,7 +357,7 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
 
         if (!caratObj) {
           caratObj = shapeObj.carats.find((c: any) =>
-            c.diamondCategory?.some((cat: string) => /^d([2-9]|10)$/i.test(cat))
+            c.diamondCategory?.some((cat: string) => /^d(1[6-9]|2[0-9]|30)$/i.test(cat))
           );
         }
 
@@ -368,7 +368,7 @@ export const getCart = asyncHandler(async (req: Request, res: Response) => {
 
           let itemDiamondTotal = 0;
           caratObj.diamondCategory.forEach((cat: string, idx: number) => {
-            if (/^d([2-9]|10)$/i.test(cat)) {
+            if (/^d(1[6-9]|2[0-9]|30)$/i.test(cat)) {
               itemDiamondTotal += (caratObj.diamondRate[idx] || 0) * reqCarat;
             } else {
               itemDiamondTotal += (caratObj.diamondAmt[idx] || 0);
@@ -524,7 +524,7 @@ export const syncCart = asyncHandler(async (req: Request, res: Response) => {
   }
 
   let cart = await Cart.findOne({ user: userId });
-  
+
   if (!cart) {
     cart = new Cart({ user: userId, items: localItems });
   } else {
@@ -534,18 +534,18 @@ export const syncCart = asyncHandler(async (req: Request, res: Response) => {
         const isSameMetal = i.metal.toLowerCase() === lItem.metal.toLowerCase();
         const isSameColor = i.color.toLowerCase() === lItem.color.toLowerCase();
         const isSameShape = i.shape.toLowerCase() === lItem.shape.toLowerCase();
-        
+
         const isSameCarat = parseFloat(String(i.carat)).toFixed(3) === parseFloat(String(lItem.carat)).toFixed(3);
 
         const normalizeSize = (s: any) => (s ? String(s).trim() : "");
         const isSameSize = normalizeSize(i.size) === normalizeSize(lItem.size);
 
         return (
-          isSameProduct && 
-          isSameMetal && 
-          isSameColor && 
-          isSameShape && 
-          isSameCarat && 
+          isSameProduct &&
+          isSameMetal &&
+          isSameColor &&
+          isSameShape &&
+          isSameCarat &&
           isSameSize
         );
       });
@@ -560,10 +560,10 @@ export const syncCart = asyncHandler(async (req: Request, res: Response) => {
   }
 
   await cart.save();
-  
-  return res.status(200).json({ 
-    success: true, 
-    message: "Cart synced successfully", 
-    data: cart 
+
+  return res.status(200).json({
+    success: true,
+    message: "Cart synced successfully",
+    data: cart
   });
 });

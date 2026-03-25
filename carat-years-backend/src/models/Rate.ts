@@ -20,6 +20,26 @@ export interface IRate extends Document {
     d8: number;
     d9: number;
     d10: number;
+    d11: number;
+    d12: number;
+    d13: number;
+    d14: number;
+    d15: number;
+    d16: number;
+    d17: number;
+    d18: number;
+    d19: number;
+    d20: number;
+    d21: number;
+    d22: number;
+    d23: number;
+    d24: number;
+    d25: number;
+    d26: number;
+    d27: number;
+    d28: number;
+    d29: number;
+    d30: number;
   };
   labour: {
     l1: number;
@@ -43,11 +63,31 @@ const rateSchema = new Schema<IRate>(
       d3: { type: Number, required: true, default: 0 },
       d4: { type: Number, required: true, default: 0 },
       d5: { type: Number, required: true, default: 0 },
-      d6: {type: Number, required: true, default: 0 },
+      d6: { type: Number, required: true, default: 0 },
       d7: { type: Number, required: true, default: 0 },
       d8: { type: Number, required: true, default: 0 },
       d9: { type: Number, required: true, default: 0 },
       d10: { type: Number, required: true, default: 0 },
+      d11: { type: Number, required: true, default: 0 },
+      d12: { type: Number, required: true, default: 0 },
+      d13: { type: Number, required: true, default: 0 },
+      d14: { type: Number, required: true, default: 0 },
+      d15: { type: Number, required: true, default: 0 },
+      d16: { type: Number, required: true, default: 0 },
+      d17: { type: Number, required: true, default: 0 },
+      d18: { type: Number, required: true, default: 0 },
+      d19: { type: Number, required: true, default: 0 },
+      d20: { type: Number, required: true, default: 0 },
+      d21: { type: Number, required: true, default: 0 },
+      d22: { type: Number, required: true, default: 0 },
+      d23: { type: Number, required: true, default: 0 },
+      d24: { type: Number, required: true, default: 0 },
+      d25: { type: Number, required: true, default: 0 },
+      d26: { type: Number, required: true, default: 0 },
+      d27: { type: Number, required: true, default: 0 },
+      d28: { type: Number, required: true, default: 0 },
+      d29: { type: Number, required: true, default: 0 },
+      d30: { type: Number, required: true, default: 0 },
     },
     labour: {
       l1: { type: Number, required: true, default: 0 },

@@ -6,6 +6,48 @@ import { Discount } from "../models/Discount";
 import { Order } from "../models/Order";
 import { asyncHandler } from "../middlewares/asyncHandler";
 
+const DYNAMIC_DIAMOND_REGEX = /^D(1[6-9]|2[0-9]|30)$/i;
+
+const calculateDiamondPrice = (caratObj: any, requestedCarat: number) => {
+  const {
+    diamondCategory = [],
+    diamondRate = [],
+    diamondAmt = [],
+    metalAmt = 0,
+    labourAmt = 0,
+  } = caratObj;
+
+  let recalculatedDiamondTotal = 0;
+  let fixedDiamondTotal = 0;
+
+  diamondCategory.forEach((cat: string, index: number) => {
+    const categoryName = String(cat).trim().toUpperCase();
+    const rate = parseFloat(diamondRate[index]) || 0;
+
+    // Logic: D16-D30 scale by weight, others are fixed
+    const isDynamic = DYNAMIC_DIAMOND_REGEX.test(categoryName);
+
+    if (isDynamic && rate > 0) {
+      recalculatedDiamondTotal += rate * requestedCarat;
+    } else {
+      fixedDiamondTotal += parseFloat(diamondAmt[index]) || 0;
+    }
+  });
+
+  const unitTotal =
+    (parseFloat(metalAmt) || 0) +
+    (parseFloat(labourAmt) || 0) +
+    fixedDiamondTotal +
+    recalculatedDiamondTotal;
+
+  return {
+    unitTotal: Math.round(unitTotal),
+    metalAmt: parseFloat(metalAmt) || 0,
+    labourAmt: parseFloat(labourAmt) || 0,
+    diamondAmtTotal: fixedDiamondTotal + recalculatedDiamondTotal
+  };
+};
+
 export const createOrder = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?._id;
   const { addressId, paymentMethod } = req.body;
@@ -14,10 +56,6 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
     path: "items.product",
     model: Product,
     select: "title slug category variations",
-    populate: {
-      path: "category",
-      select: "title slug",
-    },
   });
 
   if (!cart || cart.items.length === 0) {
@@ -25,11 +63,8 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const address = await Address.findOne({ _id: addressId, userId: userId });
-  
   if (!address) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Address not found" });
+    return res.status(404).json({ success: false, message: "Address not found" });
   }
 
   let discount: any = null;
@@ -38,63 +73,65 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       code: cart.discountCode.trim().toUpperCase(),
       publish: true,
     }).lean();
-
     if (foundDiscount) {
       discount = {
         code: foundDiscount.code,
         labDiscount: foundDiscount.labDiscount || 0,
         diamondDiscount: foundDiscount.diamondDiscount || 0,
       };
-    } else {
-      cart.discountCode = null;
-      await cart.save();
     }
   }
 
   const itemsWithSnapshots = cart.items.map((item: any) => {
     const product = item.product as any;
-    let image = null;
+    
+    // Safety check for the "Cannot read properties of null (reading '_id')" error
+    if (!product) {
+      throw new Error("One or more products in your cart are no longer available.");
+    }
 
+    let image = null;
     const matchedVariation = product.variations.find(
-      (v: any) => v.metal === item.metal && v.color === item.color
+      (v: any) => v.metal.toLowerCase() === item.metal.toLowerCase() && 
+                  v.color.toLowerCase() === item.color.toLowerCase()
     );
 
-    let matchedShape, matchedCarat;
-    let metalAmt = 0,
-      labourAmt = 0,
-      diamondAmtTotal = 0,
-      totalAmt = 0,
-      labDiscountAmt = 0,
-      diamondDiscountAmt = 0,
-      totalDiscountAmt = 0,
-      finalAmt = 0;
+    let metalAmt = 0, labourAmt = 0, diamondAmtTotal = 0, totalAmt = 0;
+    let labDiscountAmt = 0, diamondDiscountAmt = 0, totalDiscountAmt = 0, finalAmt = 0;
 
     if (matchedVariation) {
-      matchedShape = matchedVariation.shapes.find(
-        (s: any) => s.shape === item.shape
+      const matchedShape = matchedVariation.shapes.find(
+        (s: any) => s.shape.toLowerCase() === item.shape.toLowerCase()
       );
 
       if (matchedShape) {
         image = matchedShape.images?.[0] || null;
-        matchedCarat = matchedShape.carats.find(
-          (c: any) => c.carat === item.carat
-        );
+        
+        // FIND CARAT OBJ (Same logic as addToCart)
+        const reqCaratNum = parseFloat(String(item.carat));
+        let caratObj = matchedShape.carats.find((c: any) => {
+          return parseFloat(String(c.carat)).toFixed(3) === reqCaratNum.toFixed(3);
+        });
 
-        if (matchedCarat) {
+        // Fallback for Dynamic tiers (D16-D30)
+        if (!caratObj) {
+          caratObj = matchedShape.carats.find((c: any) =>
+            c.diamondCategory?.some((cat: any) => DYNAMIC_DIAMOND_REGEX.test(String(cat).trim()))
+          );
+        }
+
+        if (caratObj) {
           const qty = item.quantity || 1;
-          metalAmt = matchedCarat.metalAmt * qty;
-          labourAmt = matchedCarat.labourAmt * qty;
-          diamondAmtTotal =
-            matchedCarat.diamondAmt.reduce(
-              (acc: number, val: number) => acc + val,
-              0
-            ) * qty;
-          totalAmt = matchedCarat.totalAmt * qty;
+          const pricing = calculateDiamondPrice(caratObj, reqCaratNum);
+          
+          metalAmt = pricing.metalAmt * qty;
+          labourAmt = pricing.labourAmt * qty;
+          diamondAmtTotal = pricing.diamondAmtTotal * qty;
+          totalAmt = pricing.unitTotal * qty; // This is the corrected price
 
           if (discount) {
             labDiscountAmt = (labourAmt * discount.labDiscount) / 100;
-            diamondDiscountAmt =
-              (diamondAmtTotal * discount.diamondDiscount) / 100;
+            diamondDiscountAmt = (diamondAmtTotal * discount.diamondDiscount) / 100;
           }
 
           totalDiscountAmt = labDiscountAmt + diamondDiscountAmt;
@@ -107,7 +144,7 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       product: product._id,
       title: product.title,
       slug: product.slug,
-      category: product.category?.title || null,
+      category: item.category || "Jewelry",
       image,
       metal: item.metal,
       color: item.color,
@@ -118,32 +155,23 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       carat: item.carat,
       size: item.size,
       quantity: item.quantity,
-      price: finalAmt,
+      price: Math.round(finalAmt),
       priceDetails: {
-        metalAmt,
-        labourAmt,
-        diamondAmtTotal,
-        totalAmt,
-        labDiscountAmt,
-        diamondDiscountAmt,
-        totalDiscountAmt,
-        finalAmt,
+        metalAmt: Math.round(metalAmt),
+        labourAmt: Math.round(labourAmt),
+        diamondAmtTotal: Math.round(diamondAmtTotal),
+        totalAmt: Math.round(totalAmt),
+        labDiscountAmt: Math.round(labDiscountAmt),
+        diamondDiscountAmt: Math.round(diamondDiscountAmt),
+        totalDiscountAmt: Math.round(totalDiscountAmt),
+        finalAmt: Math.round(finalAmt),
       },
     };
   });
 
-  const subtotal = itemsWithSnapshots.reduce(
-    (acc, item) => acc + (item.priceDetails?.totalAmt ?? 0),
-    0
-  );
-  const totalLabDiscount = itemsWithSnapshots.reduce(
-    (acc, item) => acc + (item.priceDetails?.labDiscountAmt ?? 0),
-    0
-  );
-  const totalDiamondDiscount = itemsWithSnapshots.reduce(
-    (acc, item) => acc + (item.priceDetails?.diamondDiscountAmt ?? 0),
-    0
-  );
+  const subtotal = itemsWithSnapshots.reduce((acc, item) => acc + item.priceDetails.totalAmt, 0);
+  const totalLabDiscount = itemsWithSnapshots.reduce((acc, item) => acc + item.priceDetails.labDiscountAmt, 0);
+  const totalDiamondDiscount = itemsWithSnapshots.reduce((acc, item) => acc + item.priceDetails.diamondDiscountAmt, 0);
   const totalDiscount = totalLabDiscount + totalDiamondDiscount;
   const finalTotal = subtotal - totalDiscount;
 
@@ -161,20 +189,18 @@ export const createOrder = asyncHandler(async (req: Request, res: Response) => {
       addressLine1: address.addressLine1,
       addressLine2: address.addressLine2,
       landmark: address.landmark,
-      isDefault: address.isDefault,
     },
     discountInfo: discount,
-    subtotal,
-    totalLabDiscount,
-    totalDiamondDiscount,
-    totalDiscount,
-    finalTotal,
+    subtotal: Math.round(subtotal),
+    totalLabDiscount: Math.round(totalLabDiscount),
+    totalDiamondDiscount: Math.round(totalDiamondDiscount),
+    totalDiscount: Math.round(totalDiscount),
+    finalTotal: Math.round(finalTotal),
     paymentMethod: paymentMethod || "COD",
   });
 
+  // Reset Cart
   cart.items = [];
-  cart.subtotal = 0;
-  cart.total = 0;
   cart.discountCode = null;
   await cart.save();
 
