@@ -19,6 +19,13 @@ export default function Img({
   const getSrc = () => {
   if (!src) return "";
 
+  if (src.includes("res.cloudinary.com")) {
+    return src.replace(
+      "/upload/",
+      "/upload/q_auto,f_auto/"
+    );
+  }
+
   if (src.startsWith("http://") || src.startsWith("https://")) {
     return src;
   }

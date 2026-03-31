@@ -8,11 +8,6 @@ type BulkUploadProps = {
   onClose: () => void;
 };
 
-const SHAPE_LIST = [
-  "Round", "Princess", "Heart", "Oval", "Emerald",
-  "Radiant", "Marquise", "Pear", "Cushion"
-];
-
 export default function BulkUpload({ onClose }: BulkUploadProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { mutate: bulkUpload, isPending } = useBulkPostProduct();
@@ -76,7 +71,6 @@ export default function BulkUpload({ onClose }: BulkUploadProps) {
               slug: row.slug || pCode,
               title: row.title,
               description: row.description,
-              video: row.video,
               category: row.category,
               tags: stringToArray(row.tags),
               designType: row.designType,
@@ -84,7 +78,7 @@ export default function BulkUpload({ onClose }: BulkUploadProps) {
               occsasion: stringToArray(row.occsasion),
               stone: row.stone,
               gender: row.gender || "Women",
-              reviews:{
+              reviews: {
                 averageRating: parseFloat(row.averageRating) || 4,
                 numberOfReviews: parseInt(row.numberOfReviews) || 168,
               },
@@ -104,34 +98,27 @@ export default function BulkUpload({ onClose }: BulkUploadProps) {
           }
 
           const variation = productsMap[pCode].variations[vKey];
-          const shouldExpand = row.autoExpand?.toUpperCase() === "TRUE";
           const csvCategory = safeParse(row.diamondCategory);
 
-          if (shouldExpand) {
-            SHAPE_LIST.forEach((shapeName, index) => {
-              let finalCategory = [];
+          let finalCategory: string[] = [];
 
-              if (csvCategory.includes("D1")) {
-                finalCategory = ["D1", `D${index + 2}`];
-              }
-              else {
-                finalCategory = [`D${index + 2}`];
-              }
+          if (Array.isArray(csvCategory)) {
+            const cleaned = csvCategory
+              .filter((c: string) => /^D\d+$/.test(c));
 
-              variation.shapes.push({
-                shape: shapeName,
-                images: safeParse(row.images),
-                carats: [mapCaratData(row, finalCategory)] 
-              });
-            });
-          } else {
-
-            variation.shapes.push({
-              shape: row.shape,
-              images: safeParse(row.images),
-              carats: [mapCaratData(row)] 
-            });
+            if (cleaned.length === 1) {
+              finalCategory = [cleaned[0]];
+            } else if (cleaned.length >= 2) {
+              finalCategory = [cleaned[0], cleaned[1]];
+            }
           }
+
+          variation.shapes.push({
+            shape: row.shape,
+            images: safeParse(row.images),
+            video: row.video,
+            carats: [mapCaratData(row, finalCategory)]
+          });
         });
 
         const finalProducts = Object.values(productsMap).map((p: any) => ({

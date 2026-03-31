@@ -30,7 +30,6 @@ export default function Custom() {
 
           <div className="grid lg:grid-cols-2">
 
-            {/* Image */}
             <div className="relative order-1 h-[300px] sm:h-[400px] lg:order-2 lg:h-full">
               <Img
                 src={res?.image}
@@ -39,7 +38,6 @@ export default function Custom() {
               />
             </div>
 
-            {/* Content */}
             <div className="order-2 flex flex-col justify-center space-y-6 rounded-2xl bg-white/90 px-6 py-12 text-center shadow-md lg:order-1 lg:rounded-none lg:bg-transparent lg:px-16 lg:text-left lg:shadow-none">
 
               <h2 className="font-montserrat text-3xl leading-tight font-medium text-gray-900 sm:text-4xl lg:text-5xl">

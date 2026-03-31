@@ -23,6 +23,7 @@ export interface ICaratOption {
 export interface IVariationShape {
   shape: string;
   images: string[];
+  video: string;
   carats: ICaratOption[];
 }
 
@@ -38,7 +39,6 @@ export interface IProduct extends Document {
   title: string;
   description: string;
   category: Schema.Types.ObjectId;
-  video: string,
   tags?: string[];
   variations: IVariation[];
   designType: string;
@@ -87,6 +87,7 @@ const variationShapeSchema = new Schema<IVariationShape>(
   {
     shape: { type: String, required: true },
     images: { type: [String], default: [] },
+    video: { type: String, default: "" },
     carats: { type: [caratSchema], default: [] },
   },
   { _id: false }
@@ -112,7 +113,6 @@ const productSchema = new Schema<IProduct>(
       required: true,
       ref: "ProductCategory",
     },
-    video: { type: String },
     tags: { type: [String], default: [] },
     variations: { type: [variationSchema], default: [] },
     designType: { type: String, required: true },

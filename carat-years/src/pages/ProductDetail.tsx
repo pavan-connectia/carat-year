@@ -60,7 +60,7 @@ export default function ProductDetail() {
     let total = 0;
     const breakdown = selectedCaratObj.diamondCategory.map((cat: string, index: number) => {
       const catNumber = parseInt(cat.replace("D", ""));
-      const isDynamic = catNumber >= 2 && catNumber <= 10;
+      const isDynamic = catNumber >= 16 && catNumber <= 30;
 
       const diamondRate = selectedCaratObj.diamondRate?.[index] || 0;
       const diamondAmt = selectedCaratObj.diamondAmt?.[index] || 0;

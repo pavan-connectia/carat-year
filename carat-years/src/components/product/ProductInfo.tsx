@@ -64,7 +64,7 @@ export default function ProductInfo({
 
   const allImages = useMemo(() => {
     const images: string[] = [];
-    if (product?.video) images.push(product.video);
+    if (selectedShapeObj?.video) images.push(selectedShapeObj?.video);
     if (selectedShapeObj?.images?.length) {
       images.push(...selectedShapeObj.images);
     } else if (selectedVariation?.shapes?.[0]?.images?.length) {

@@ -29,6 +29,15 @@ export default function ProductSpecs({
 
   const productType = product?.title?.toLowerCase()
 
+  // Logic: Only show Carat selection if diamondCategory contains D16 to D30
+  const showCaratSelector = useMemo(() => {
+    const categories = selectedShapeObj?.carats?.[0]?.diamondCategory || [];
+    return categories.some((cat: string) => {
+      const num = parseInt(cat.replace(/\D/g, ""), 10);
+      return num >= 16 && num <= 30;
+    });
+  }, [selectedShapeObj]);
+
   const shouldShowSize =
     (productType === "ring" || productType === "bracelet") &&
     selectedCaratObj?.size?.some((s: string) => s !== "N/A")
@@ -86,7 +95,7 @@ export default function ProductSpecs({
               {product?.description}
             </h2>
             <p className="mt-1 text-xs lg:text-sm text-gray-600 font-medium">
-              Select metal, shape, carat & size
+              Select metal, shape{showCaratSelector ? ", carat" : ""} & size
             </p>
           </div>
 
@@ -173,62 +182,65 @@ export default function ProductSpecs({
           </div>
         </div>
 
-        <div className="h-px bg-linear-to-r from-transparent via-[#E8D9B5] to-transparent" />
+        {/* CARAT SELECTION - ONLY SHOW IF D16-D30 PRESENT */}
+        {showCaratSelector && (
+          <>
+            <div className="h-px bg-linear-to-r from-transparent via-[#E8D9B5] to-transparent" />
+            <div className="flex flex-col lg:flex-row items-start gap-3 lg:gap-6">
+              <div className="flex items-center gap-2 w-full lg:w-40 shrink-0">
+                <div className="flex h-7 w-7 lg:h-8 lg:w-8 items-center justify-center rounded-full bg-amber-100 shrink-0">
+                  <Weight className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-[#957127]" />
+                </div>
+                <h3 className="font-semibold text-gray-900 text-sm">Carat</h3>
+              </div>
+              <div className="flex-1 w-full">
+                {bespokeOptions.length > 0 && (
+                  <div className="flex mb-4 w-full">
+                    <div className="flex w-full p-1 border border-[#E8D9B5] bg-white/50 rounded-sm">
+                      <button
+                        onClick={() => setCaratRange("standard")}
+                        className={`flex-1 px-2 py-1.5 text-[10px] lg:text-xs font-bold transition-all cursor-pointer text-center
+                          ${caratRange === "standard" ? "bg-[#E8D9B5] text-[#957127] shadow-sm" : "text-gray-500"}`}
+                      >
+                        0.2ct - 3.0ct
+                      </button>
+                      <button
+                        onClick={() => setCaratRange("bespoke")}
+                        className={`flex-1 px-2 py-1.5 text-[10px] lg:text-xs font-bold transition-all cursor-pointer text-center
+                          ${caratRange === "bespoke" ? "bg-[#E8D9B5] text-[#957127] shadow-sm" : "text-gray-500"}`}
+                      >
+                        3.0ct - 10.0ct
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-        {/* CARAT SELECTION */}
-        <div className="flex flex-col lg:flex-row items-start gap-3 lg:gap-6">
-          <div className="flex items-center gap-2 w-full lg:w-40 shrink-0">
-            <div className="flex h-7 w-7 lg:h-8 lg:w-8 items-center justify-center rounded-full bg-amber-100 shrink-0">
-              <Weight className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-[#957127]" />
-            </div>
-            <h3 className="font-semibold text-gray-900 text-sm">Carat</h3>
-          </div>
-          <div className="flex-1 w-full">
-            {bespokeOptions.length > 0 && (
-              <div className="flex mb-4 w-full">
-                <div className="flex w-full p-1 border border-[#E8D9B5] bg-white/50 rounded-sm">
-                  <button
-                    onClick={() => setCaratRange("standard")}
-                    className={`flex-1 px-2 py-1.5 text-[10px] lg:text-xs font-bold transition-all cursor-pointer text-center
-                      ${caratRange === "standard" ? "bg-[#E8D9B5] text-[#957127] shadow-sm" : "text-gray-500"}`}
-                  >
-                    0.2ct - 3.0ct
-                  </button>
-                  <button
-                    onClick={() => setCaratRange("bespoke")}
-                    className={`flex-1 px-2 py-1.5 text-[10px] lg:text-xs font-bold transition-all cursor-pointer text-center
-                      ${caratRange === "bespoke" ? "bg-[#E8D9B5] text-[#957127] shadow-sm" : "text-gray-500"}`}
-                  >
-                    3.0ct - 10.0ct
-                  </button>
+                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:flex lg:flex-wrap gap-2">
+                  {displayedOptions.length > 0 ? (
+                    displayedOptions.map((c: any) => (
+                      <button
+                        key={c.carat}
+                        onClick={() => {
+                          setSelectedCarat(c.carat);
+                          const obj = selectedShapeObj?.carats?.find((x: any) => x.carat === c.carat);
+                          if (obj) setSelectedCaratObj(obj);
+                        }}
+                        className={`min-w-[50px] sm:min-w-[60px] px-2 sm:px-3 py-1.5 sm:py-2 border-2 text-xs font-bold transition-all cursor-pointer duration-200 ${selectedCarat === c.carat
+                          ? "bg-[#957127] border-[#957127] text-white shadow-md scale-105"
+                          : "border-[#E8D9B5] text-gray-600 hover:border-[#c9b386] hover:bg-amber-50"
+                          }`}
+                      >
+                        {c.carat}
+                      </button>
+                    ))
+                  ) : (
+                    <p className="text-xs text-gray-400 italic py-2">No options in this range.</p>
+                  )}
                 </div>
               </div>
-            )}
-
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:flex lg:flex-wrap gap-2">
-              {displayedOptions.length > 0 ? (
-                displayedOptions.map((c: any) => (
-                  <button
-                    key={c.carat}
-                    onClick={() => {
-                      setSelectedCarat(c.carat);
-                      const obj = selectedShapeObj?.carats?.find((x: any) => x.carat === c.carat);
-                      if (obj) setSelectedCaratObj(obj);
-                    }}
-                    className={`min-w-[50px] sm:min-w-[60px] px-2 sm:px-3 py-1.5 sm:py-2 border-2 text-xs font-bold transition-all cursor-pointer duration-200 ${selectedCarat === c.carat
-                      ? "bg-[#957127] border-[#957127] text-white shadow-md scale-105"
-                      : "border-[#E8D9B5] text-gray-600 hover:border-[#c9b386] hover:bg-amber-50"
-                      }`}
-                  >
-                    {c.carat}
-                  </button>
-                ))
-              ) : (
-                <p className="text-xs text-gray-400 italic py-2">No options in this range.</p>
-              )}
             </div>
-          </div>
-        </div>
+          </>
+        )}
 
         {/* SIZE SELECTION */}
         {shouldShowSize && selectedCaratObj?.size && (
